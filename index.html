@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Puffly | The Sovereign Business Edition</title>
+    <title>Puffly | Sovereign Full Version</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -21,7 +21,7 @@
         .splash-logo { font-size: 60px; animation: bounce 2s infinite; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
 
-        /* UI Layout */
+        /* Layout */
         .view-section { flex: 1; display: none; overflow-y: auto; padding-bottom: 80px; }
         .active-view { display: block; }
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 75px; background: var(--nav-bg); backdrop-filter: blur(15px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(0,0,0,0.05); z-index: 4000; }
@@ -36,25 +36,15 @@
         .action-btn { cursor: pointer; text-align: center; }
         .action-btn i { font-size: 32px; transition: 0.3s; }
         .action-btn.liked i { color: var(--puffly-blue); filter: drop-shadow(0 0 8px var(--puffly-blue)); }
-        .follow-badge { width: 22px; height: 22px; background: var(--primary); border-radius: 50%; position: absolute; bottom: -5px; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: 10px; transition: 0.3s; }
-        .follow-badge.followed { background: var(--puffly-blue); }
-
-        /* Chat & Stickers */
-        .chat-header { padding: 15px; background: white; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #eee; }
-        .chat-container { padding: 15px; display: flex; flex-direction: column; gap: 12px; height: calc(100vh - 250px); overflow-y: auto; background: var(--bg); }
-        .bubble { max-width: 80%; padding: 10px 15px; border-radius: 18px; font-size: 14px; }
-        .bubble.me { align-self: flex-end; background: var(--primary-grad); color: white; border-bottom-right-radius: 4px; }
-        .bubble.you { align-self: flex-start; background: white; border-bottom-left-radius: 4px; }
-        .sticker-item { text-align: center; cursor: pointer; transition: 0.2s; padding: 5px; border-radius: 10px; }
-        .sticker-item:active { background: #f0f0f0; transform: scale(0.9); }
+        
+        /* ถาดคอมเมนต์ใต้คลิป */
+        #commentSheet { display:none; position:fixed; bottom:0; left:0; right:0; height:60vh; background:white; z-index:4500; border-top-left-radius:25px; border-top-right-radius:25px; flex-direction:column; box-shadow: 0 -5px 20px rgba(0,0,0,0.2); }
 
         /* Wallet & Profile */
-        .profile-header { text-align: center; padding: 30px 20px; background: white; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
-        .wallet-card { margin: -20px 20px 20px; background: var(--primary-grad); border-radius: 20px; padding: 20px; color: white; box-shadow: 0 10px 20px rgba(255,143,163,0.3); }
-
-        /* Live Overlay */
+        .wallet-card { margin: 15px; background: var(--primary-grad); border-radius: 20px; padding: 20px; color: white; box-shadow: 0 10px 20px rgba(255,143,163,0.3); }
+        
+        /* Gifts & Live */
         #liveOverlay { display: none; position: fixed; inset: 0; background: #000; z-index: 5000; flex-direction: column; }
-        .live-chat { flex: 1; padding: 20px; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; color: white; overflow-y: auto; pointer-events: none; }
         .gift-panel { position: absolute; bottom: -100%; left: 0; right: 0; background: white; border-top-left-radius: 25px; border-top-right-radius: 25px; padding: 20px; transition: 0.4s; z-index: 5001; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
         .gift-panel.active { bottom: 0; }
     </style>
@@ -92,10 +82,27 @@
                     <p style="font-size:10px;" id="likeCount">1.2K</p>
                 </div>
 
-                <div class="action-btn" onclick="switchTab('inboxView', document.querySelectorAll('.nav-item')[1])">
+                <div class="action-btn" onclick="openComments()">
                     <i class="fa-solid fa-comment-dots"></i>
-                    <p style="font-size:10px;">99</p>
+                    <p style="font-size:10px;">1.2K</p>
                 </div>
+            </div>
+        </div>
+
+        <div id="commentSheet">
+            <div style="padding:15px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
+                <b>คอมเมนต์ (1.2K)</b>
+                <i class="fa-solid fa-xmark" onclick="closeComments()" style="font-size:20px; cursor:pointer;"></i>
+            </div>
+            <div id="reelsCommentBox" style="flex:1; overflow-y:auto; padding:15px; display:flex; flex-direction:column; gap:12px;">
+                <div style="display:flex; gap:10px;">
+                    <div style="width:30px; height:30px; border-radius:50%; background:#eee;"></div>
+                    <div><p style="font-size:12px; font-weight:bold;">User_01</p><p style="font-size:13px;">น่ารักมากเลย ☁️</p></div>
+                </div>
+            </div>
+            <div style="padding:15px; border-top:1px solid #eee; display:flex; gap:10px; background:white;">
+                <input type="text" id="reelsInp" style="flex:1; background:#f8f8f8; border:none; padding:10px; border-radius:20px; outline:none;" placeholder="แสดงความคิดเห็น...">
+                <i class="fa-solid fa-paper-plane" style="color:var(--primary); font-size:18px; cursor:pointer;" onclick="sendReelComment()"></i>
             </div>
         </div>
     </div>
@@ -103,55 +110,37 @@
     <div id="inboxView" class="view-section">
         <div class="chat-header">
             <div style="width:40px; height:40px; border-radius:12px; background:var(--primary-grad); display:flex; align-items:center; justify-content:center; color:white;"><i class="fa-solid fa-cloud"></i></div>
-            <div style="flex:1;"><b>Customer Service</b><p style="font-size:10px; color:green;">ออนไลน์</p></div>
-            <div style="display: flex; gap: 15px;">
-                <i class="fa-solid fa-phone" style="color:var(--primary); cursor:pointer;" onclick="alert('Calling...')"></i>
-                <i class="fa-solid fa-video" style="color:var(--primary); cursor:pointer;" onclick="alert('Video calling...')"></i>
-            </div>
+            <div style="flex:1;"><b>Puffly Support</b><p style="font-size:10px; color:green;">ออนไลน์</p></div>
         </div>
-        
-        <div id="chatBox" class="chat-container">
-            <div class="bubble you">สวัสดีค่ะ เลือกซื้อสติกเกอร์น่ารักๆ ส่งให้เพื่อนได้เลยนะ ☁️</div>
+        <div id="chatBox" style="padding:15px; display:flex; flex-direction:column; gap:10px; height:calc(100vh - 250px); overflow-y:auto;">
+            <div class="bubble you">สวัสดีค่ะ เลือกซื้อสติกเกอร์ส่งได้เลยนะคะ</div>
         </div>
-
         <div style="padding:15px; background:white; border-top:1px solid #eee;">
-            <div style="display:flex; gap:12px; align-items:center;">
+            <div style="display:flex; gap:10px; align-items:center;">
                 <i class="fa-solid fa-face-smile" style="color:var(--primary); font-size:24px; cursor:pointer;" onclick="toggleStickerPanel()"></i>
-                <input type="text" id="msgInput" style="flex:1; background:#f8f8f8; border:none; padding:12px 15px; border-radius:20px; outline:none;" placeholder="พิมพ์ข้อความ...">
+                <input type="text" id="msgInput" style="flex:1; background:#f8f8f8; border:none; padding:10px; border-radius:20px; outline:none;" placeholder="พิมพ์ข้อความ...">
                 <i class="fa-solid fa-paper-plane" style="color:var(--primary); font-size:20px; cursor:pointer;" onclick="sendMsg()"></i>
             </div>
-
-            <div id="stickerPanel" style="display:none; grid-template-columns: repeat(4, 1fr); gap:10px; padding-top:15px; border-top:1px solid #f0f0f0; margin-top:10px;">
+            <div id="stickerPanel" style="display:none; grid-template-columns: repeat(4, 1fr); gap:10px; padding-top:10px;">
                 <div class="sticker-item" onclick="buySticker('🐱', 5)"><span>🐱</span><p style="font-size:9px;">5 C</p></div>
-                <div class="sticker-item" onclick="buySticker('🐰', 5)"><span>🐰</span><p style="font-size:9px;">5 C</p></div>
-                <div class="sticker-item" onclick="buySticker('💖', 10)"><span>💖</span><p style="font-size:9px;">10 C</p></div>
-                <div class="sticker-item" onclick="buySticker('🔥', 10)"><span>🔥</span><p style="font-size:9px;">10 C</p></div>
-                <div class="sticker-item" onclick="buySticker('🌈', 20)"><span>🌈</span><p style="font-size:9px;">20 C</p></div>
-                <div class="sticker-item" onclick="buySticker('💎', 50)"><span>💎</span><p style="font-size:9px;">50 C</p></div>
-                <div class="sticker-item" onclick="buySticker('👑', 100)"><span>👑</span><p style="font-size:9px;">100 C</p></div>
                 <div class="sticker-item" onclick="buySticker('☁️', 5)"><span>☁️</span><p style="font-size:9px;">5 C</p></div>
+                <div class="sticker-item" onclick="buySticker('👑', 100)"><span>👑</span><p style="font-size:9px;">100 C</p></div>
+                <div class="sticker-item" onclick="buySticker('🔥', 10)"><span>🔥</span><p style="font-size:9px;">10 C</p></div>
             </div>
         </div>
     </div>
 
     <div id="profileView" class="view-section">
-        <div class="profile-header">
-            <div style="width:90px; height:90px; border-radius:30px; background:var(--primary-grad); margin:0 auto 15px; display:flex; align-items:center; justify-content:center; color:white; font-size:40px;"><i class="fa-solid fa-user"></i></div>
+        <div style="text-align:center; padding:30px;">
+            <div style="width:80px; height:80px; border-radius:25px; background:var(--primary-grad); margin:0 auto 15px; color:white; font-size:30px; display:flex; align-items:center; justify-content:center;"><i class="fa-solid fa-user"></i></div>
             <h2>@Creator_Asura</h2>
-            <p style="color:var(--muted); font-size:12px;">ผู้สร้าง Asura's Ransom</p>
         </div>
         <div class="wallet-card">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div>
-                    <p style="font-size:11px; opacity:0.9;">Coins ของฉัน (ใช้จ่าย)</p>
-                    <h1 id="userCoins">...</h1>
-                </div>
-                <div style="text-align:right;">
-                    <p style="font-size:11px; opacity:0.9;">รายได้ (ถอนได้)</p>
-                    <h2 id="userIncome">฿0.00</h2>
-                </div>
+            <div style="display:flex; justify-content:space-between;">
+                <div><p style="font-size:11px;">Coins ของฉัน</p><h1 id="userCoins">...</h1></div>
+                <div style="text-align:right;"><p style="font-size:11px;">รายได้สะสม</p><h2 id="userIncome">฿0.00</h2></div>
             </div>
-            <button onclick="withdrawMoney()" style="width:100%; margin-top:15px; background:white; color:var(--primary); border:none; padding:10px; border-radius:12px; font-weight:bold;">ถอนเงิน</button>
+            <button onclick="withdrawMoney()" style="width:100%; margin-top:15px; background:white; color:var(--primary); border:none; padding:10px; border-radius:10px; font-weight:bold;">ถอนเงิน</button>
         </div>
     </div>
 
@@ -159,7 +148,7 @@
         <div class="nav-item active" onclick="switchTab('homeView', this)"><i class="fa-solid fa-house"></i><span>หน้าแรก</span></div>
         <div class="nav-item" onclick="switchTab('inboxView', this)"><i class="fa-solid fa-comment-dots"></i><span>ข้อความ</span></div>
         <div class="nav-item" style="color:var(--primary);"><i class="fa-solid fa-circle-plus" style="font-size:35px;"></i></div>
-        <div class="nav-item" onclick="alert('Search feature coming soon!')"><i class="fa-solid fa-magnifying-glass"></i><span>ค้นหา</span></div>
+        <div class="nav-item" onclick="alert('ค้นหาเพื่อน')"><i class="fa-solid fa-magnifying-glass"></i><span>ค้นหา</span></div>
         <div class="nav-item" onclick="switchTab('profileView', this)"><i class="fa-solid fa-user"></i><span>โปรไฟล์</span></div>
     </nav>
     <div id="liveOverlay">
@@ -171,8 +160,8 @@
             <i class="fa-solid fa-xmark" onclick="closeLive()" style="font-size:28px; cursor:pointer;"></i>
         </div>
 
-        <div id="liveComments" class="live-chat">
-            <div style="color:rgba(255,255,255,0.7); font-size:12px;">Welcome to @Creator_Asura's Live ☁️</div>
+        <div id="liveComments" style="flex:1; padding:20px; display:flex; flex-direction:column; justify-content:flex-end; gap:8px; color:white; overflow-y:auto;">
+            <div style="color:rgba(255,255,255,0.7); font-size:12px;">ยินดีต้อนรับสู่การไลฟ์สดของ @Creator_Asura ☁️</div>
         </div>
 
         <div style="padding:15px 20px 30px; display:flex; gap:12px; align-items:center; background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);">
@@ -186,8 +175,8 @@
         </div>
 
         <div id="giftPanel" class="gift-panel" onclick="event.stopPropagation()">
-            <div style="grid-column: span 4; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding:0 5px;">
-                <b style="color:var(--text);">ส่งของขวัญสนับสนุน</b>
+            <div style="grid-column: span 4; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <b style="color:var(--text);">ส่งของขวัญ</b>
                 <span style="color:var(--primary); font-size:13px; font-weight:bold;">🪙 <span id="liveCoinsUI">...</span></span>
             </div>
             
@@ -211,12 +200,12 @@
             
             <div class="sticker-item" style="border:1px solid #eee; padding:10px; border-radius:15px;" onclick="sendGift('🕊️', 1000, 700)">
                 <span style="font-size:28px;">🕊️</span>
-                <p style="font-size:10px; margin-top:5px;">นกพิราบ</p>
+                <p style="font-size:10px; margin-top:5px;">นกสันติภาพ</p>
                 <small style="color:var(--muted);">1K C</small>
             </div>
 
             <div style="grid-column: span 4; margin-top:10px;">
-                <button onclick="alert('เติมเงินผ่านระบบ Rabbit Line Pay / PromptPay')" style="width:100%; padding:10px; border-radius:10px; border:none; background:#f8f8f8; color:var(--muted); font-size:11px;">เติม Coins เพิ่ม</button>
+                <button onclick="alert('ไปยังหน้าเติมเงิน PromptPay')" style="width:100%; padding:10px; border-radius:10px; border:none; background:#f8f8f8; color:var(--muted); font-size:11px;">เติม Coins</button>
             </div>
         </div>
     </div>
@@ -245,7 +234,7 @@
         let myCoins = 0;
         let myIncome = 0;
 
-        // --- 1. Real-time Sync (ดึงข้อมูลเงิน) ---
+        // --- 1. Real-time Data Sync (ระบบเงิน) ---
         onSnapshot(userRef, (snap) => {
             if (snap.exists()) {
                 myCoins = snap.data().coins || 0;
@@ -262,15 +251,44 @@
             document.getElementById('userIncome').innerText = "฿" + myIncome.toFixed(2);
         }
 
-        // --- 2. Navigation & Tabs ---
+        // --- 2. ระบบ Navigation (สลับหน้าจอ) ---
         window.switchTab = (viewId, el) => {
             document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(viewId).classList.add('active-view');
             el.classList.add('active');
+            // ปิดถาดคอมเมนต์ถ้ามีการสลับหน้า
+            closeComments();
         };
 
-        // --- 3. Sticker System (รายได้เข้าแอป 100%) ---
+        // --- 3. ระบบคอมเมนต์ใต้คลิป (แยกจากแชท) ---
+        window.openComments = () => document.getElementById('commentSheet').style.display = 'flex';
+        window.closeComments = () => document.getElementById('commentSheet').style.display = 'none';
+        
+        window.sendReelComment = () => {
+            const inp = document.getElementById('reelsInp');
+            if (!inp.value.trim()) return;
+            const box = document.getElementById('reelsCommentBox');
+            const div = document.createElement('div');
+            div.style.display = "flex"; div.style.gap = "10px";
+            div.innerHTML = `<div style="width:30px; height:30px; border-radius:50%; background:var(--primary-grad);"></div>
+                             <div><p style="font-size:12px; font-weight:bold;">คุณ</p><p style="font-size:13px;">${inp.value}</p></div>`;
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+            inp.value = "";
+        };
+
+        // --- 4. ระบบแชทส่วนตัว & ร้านสติกเกอร์ (รายได้แอป) ---
+        window.sendMsg = () => {
+            const inp = document.getElementById('msgInput');
+            if (!inp.value.trim()) return;
+            const msg = document.createElement('div');
+            msg.className = "bubble me"; msg.innerText = inp.value;
+            document.getElementById('chatBox').appendChild(msg);
+            document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
+            inp.value = "";
+        };
+
         window.toggleStickerPanel = () => {
             const p = document.getElementById('stickerPanel');
             p.style.display = p.style.display === 'none' ? 'grid' : 'none';
@@ -279,33 +297,25 @@
         window.buySticker = async (icon, price) => {
             if (myCoins >= price) {
                 await updateDoc(userRef, { coins: myCoins - price });
-                const box = document.getElementById('chatBox');
                 const msg = document.createElement('div');
-                msg.className = "bubble me";
-                msg.style.background = "none";
-                msg.style.fontSize = "50px";
+                msg.className = "bubble me"; msg.style.background = "none"; msg.style.fontSize = "40px";
                 msg.innerText = icon;
-                box.appendChild(msg);
-                box.scrollTop = box.scrollHeight;
+                document.getElementById('chatBox').appendChild(msg);
                 document.getElementById('stickerPanel').style.display = 'none';
-            } else { alert("Coins ไม่พอซื้อสติกเกอร์ค่ะ"); }
+            } else { alert("Coins ไม่พอค่ะ"); }
         };
 
-        // --- 4. Live & Gift System (รายได้ครีเอเตอร์) ---
+        // --- 5. ระบบ Live & ของขวัญ (รายได้ครีเอเตอร์) ---
         window.openLive = () => document.getElementById('liveOverlay').style.display = 'flex';
         window.closeLive = () => document.getElementById('liveOverlay').style.display = 'none';
         window.toggleGiftPanel = (e) => { e.stopPropagation(); document.getElementById('giftPanel').classList.toggle('active'); };
 
         window.sendGift = async (icon, cost, creatorEarn) => {
             if (myCoins >= cost) {
-                await updateDoc(userRef, { 
-                    coins: myCoins - cost,
-                    income: myIncome + creatorEarn 
-                });
-                const chat = document.getElementById('liveComments');
+                await updateDoc(userRef, { coins: myCoins - cost, income: myIncome + creatorEarn });
                 const item = document.createElement('div');
                 item.innerHTML = `<b style="color:#ffd700;">🎁 ของขวัญ:</b> คุณส่ง ${icon}`;
-                chat.appendChild(item);
+                document.getElementById('liveComments').appendChild(item);
                 document.getElementById('giftPanel').classList.remove('active');
             } else { alert("Coins ไม่พอค่ะ"); }
         };
@@ -313,56 +323,41 @@
         window.sendLiveComment = () => {
             const inp = document.getElementById('liveInp');
             if (!inp.value.trim()) return;
-            const chat = document.getElementById('liveComments');
             const comm = document.createElement('div');
             comm.innerHTML = `<span style="color:var(--primary);">คุณ:</span> <span style="color:white;">${inp.value}</span>`;
-            chat.appendChild(comm);
-            chat.scrollTop = chat.scrollHeight;
+            document.getElementById('liveComments').appendChild(comm);
+            document.getElementById('liveComments').scrollTop = document.getElementById('liveComments').scrollHeight;
             inp.value = "";
         };
 
-        // --- 5. Social Features (Like & Follow) ---
+        // --- 6. ฟีเจอร์โซเชียล (Like Cloud & Follow) ---
         window.toggleLike = () => {
             const btn = document.getElementById('likeBtn');
-            btn.classList.toggle('liked');
-            document.getElementById('likeCount').innerText = btn.classList.contains('liked') ? "1.2K+1" : "1.2K";
+            const isLiked = btn.classList.toggle('liked');
+            document.getElementById('likeCount').innerText = isLiked ? "1.2K+1" : "1.2K";
         };
 
         window.toggleFollow = () => {
             const badge = document.getElementById('followBtn');
-            const icon = document.getElementById('followIcon');
             const isFollowed = badge.classList.toggle('followed');
-            icon.className = isFollowed ? "fa-solid fa-check" : "fa-solid fa-plus";
-        };
-
-        // --- 6. Chat & Wallet ---
-        window.sendMsg = () => {
-            const inp = document.getElementById('msgInput');
-            if (!inp.value.trim()) return;
-            const msg = document.createElement('div');
-            msg.className = "bubble me";
-            msg.innerText = inp.value;
-            document.getElementById('chatBox').appendChild(msg);
-            document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
-            inp.value = "";
+            document.getElementById('followIcon').className = isFollowed ? "fa-solid fa-check" : "fa-solid fa-plus";
         };
 
         window.withdrawMoney = async () => {
-            if (myIncome <= 0) return alert("ยังไม่มีรายได้ค่ะ");
-            if (confirm(`ถอนรายได้ ฿${myIncome.toFixed(2)} เข้าบัญชีธนาคาร?`)) {
+            if (myIncome <= 0) return alert("ไม่มีรายได้ให้ถอน");
+            if (confirm("ยืนยันการถอนเงิน?")) {
                 await updateDoc(userRef, { income: 0 });
-                alert("ส่งคำขอถอนเงินเรียบร้อย!");
+                alert("ถอนสำเร็จ!");
             }
         };
 
-        // ปิด Splash & หน้าจอเริ่มต้น
+        // Splash Screen
         setTimeout(() => {
             document.getElementById('splash').style.opacity = '0';
             setTimeout(() => document.getElementById('splash').style.display = 'none', 800);
-        }, 2500);
+        }, 2000);
 
         document.addEventListener('click', () => document.getElementById('giftPanel').classList.remove('active'));
-        document.getElementById('liveInp').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendLiveComment(); });
     </script>
 </body>
 </html>
