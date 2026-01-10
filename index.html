@@ -11,24 +11,17 @@
             --bg: #fff0f3; --card: #ffffff; --text: #4a2c32; --muted: #a38a8e;
             --accent: #ff4d6d; --bubble-me: #ffb3c1; --bubble-you: #ffe5ec;
             --nav-bg: rgba(255, 255, 255, 0.95);
+            --puffly-blue: #87ceeb;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-        /* --- Auth Section --- */
-        #authView { position: fixed; inset: 0; background: white; z-index: 9000; display: flex; flex-direction: column; padding: 40px 25px; transition: 0.8s; }
-        .auth-logo { text-align: center; margin-top: 60px; }
-        .btn-auth { border: none; padding: 16px; border-radius: 30px; font-weight: bold; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; }
-        .btn-line { background: #06C755; color: white; }
-        .btn-google { background: #f8f9fa; color: #333; border: 1px solid #ddd; }
-        .btn-main { background: var(--primary-grad); color: white; margin-top: 10px; }
-
-        /* --- Splash Screen --- */
-        #splash { position: fixed; inset: 0; background: var(--primary-grad); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; color: white; transition: 0.8s; }
+        /* --- 1. Splash Screen --- */
+        #splash { position: fixed; inset: 0; background: var(--primary-grad); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: 0.8s; }
         .splash-logo { font-size: 60px; animation: bounce 2s infinite; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
 
-        /* --- Global Layout --- */
+        /* --- 2. Global UI --- */
         .view-section { flex: 1; display: none; overflow-y: auto; padding-bottom: 80px; }
         .active-view { display: block; }
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 75px; background: var(--nav-bg); backdrop-filter: blur(15px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid rgba(0,0,0,0.05); z-index: 4000; }
@@ -36,72 +29,52 @@
         .nav-item.active { color: var(--primary); }
         .nav-item i { font-size: 24px; }
 
-        /* --- Home View (Reels) --- */
-        #homeView { background: #000; overflow-y: scroll; scroll-snap-type: y mandatory; }
-        .reel-video { position: relative; width: 100%; height: 100vh; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; color: white; }
-        .reel-overlay { position: absolute; bottom: 100px; left: 15px; }
+        /* --- 3. Home View (Reels) --- */
+        #homeView { background: #000; overflow: hidden; }
+        .reel-video { position: relative; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; color: white; }
+        .reel-overlay { position: absolute; bottom: 100px; left: 15px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
         .reel-actions { position: absolute; bottom: 120px; right: 15px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
         .action-btn { cursor: pointer; text-align: center; }
-        .action-btn i { font-size: 30px; margin-bottom: 5px; transition: 0.3s; }
-        .action-btn.liked i { color: #87ceeb; filter: drop-shadow(0 0 5px #87ceeb); }
+        .action-btn i { font-size: 32px; transition: 0.3s; }
+        .action-btn.liked i { color: var(--puffly-blue); filter: drop-shadow(0 0 8px var(--puffly-blue)); }
 
-        /* --- Chat View --- */
+        /* --- 4. Chat View --- */
         .chat-header { padding: 15px; background: white; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; }
         .chat-container { padding: 15px; display: flex; flex-direction: column; gap: 12px; height: calc(100vh - 215px); overflow-y: auto; background: var(--bg); }
-        .bubble { max-width: 80%; padding: 10px 15px; border-radius: 18px; font-size: 14px; }
+        .bubble { max-width: 80%; padding: 10px 15px; border-radius: 18px; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .bubble.me { align-self: flex-end; background: var(--primary-grad); color: white; border-bottom-right-radius: 4px; }
-        .bubble.you { align-self: flex-start; background: var(--bubble-you); border-bottom-left-radius: 4px; border: 1px solid rgba(255,143,163,0.2); }
+        .bubble.you { align-self: flex-start; background: var(--card); border-bottom-left-radius: 4px; border: 1px solid rgba(0,0,0,0.05); }
 
-        /* --- Profile & Admin Link --- */
+        /* --- 5. Profile & Wallet --- */
         .profile-header { text-align: center; padding: 30px 20px; background: white; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
         .profile-pic { width: 90px; height: 90px; border-radius: 30px; background: var(--primary-grad); margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 40px; }
         .wallet-card { margin: -20px 20px 20px; background: var(--primary-grad); border-radius: 20px; padding: 20px; color: white; box-shadow: 0 10px 25px rgba(255,143,163,0.3); }
-        .video-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: white; padding: 2px; margin-top: 15px; }
-        .video-item { aspect-ratio: 1/1; background: #eee; position: relative; overflow: hidden; }
-        .video-item img { width: 100%; height: 100%; object-fit: cover; }
-        .admin-secret-link { text-decoration: none; color: rgba(0,0,0,0.02); font-size: 10px; display: inline-block; margin-top: 5px; }
+        .admin-secret-link { text-decoration: none; color: rgba(0,0,0,0.01); font-size: 10px; }
 
-        /* --- Live Overlay & Gift --- */
+        /* --- 6. Live Overlay --- */
         #liveOverlay { display: none; position: fixed; inset: 0; background: #000; z-index: 5000; flex-direction: column; }
         .live-chat { flex: 1; padding: 20px; display: flex; flex-direction: column; justify-content: flex-end; gap: 10px; color: white; overflow-y: auto; }
         .gift-panel { position: absolute; bottom: -100%; left: 0; right: 0; background: white; border-top-left-radius: 25px; border-top-right-radius: 25px; padding: 20px; transition: 0.4s; z-index: 5001; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
         .gift-panel.active { bottom: 0; }
-        .gift-item { text-align: center; padding: 10px; border-radius: 15px; cursor: pointer; }
-        .gift-item span { display: block; font-size: 24px; margin-bottom: 5px; }
     </style>
 </head>
-<body onclick="hideGiftPanel(event)">
-
-    <div id="authView">
-        <div class="auth-logo">
-            <i class="fa-solid fa-cloud" style="font-size: 60px; color: var(--primary);"></i>
-            <h1 style="margin-top: 20px; letter-spacing: 5px;">PUFFLY</h1>
-            <p style="color: var(--muted); margin-top: 5px;">เริ่มต้นความสดใสไปกับเรา</p>
-        </div>
-        <div style="margin-top: 60px; display: flex; flex-direction: column; gap: 15px;">
-            <button class="btn-auth btn-line" onclick="handleAuth()"><i class="fa-brands fa-line"></i> เข้าสู่ระบบด้วย LINE</button>
-            <button class="btn-auth btn-google" onclick="handleAuth()"><img src="https://www.gstatic.com/images/branding/product/1x/googleg_48dp.png" width="18"> เข้าสู่ระบบด้วย Google</button>
-            <div style="text-align: center; color: #ddd; margin: 10px 0;">หรือ</div>
-            <input type="text" placeholder="เบอร์โทรศัพท์" style="padding: 16px; border-radius: 30px; border: 1px solid #eee; outline: none; text-align: center;">
-            <button class="btn-auth btn-main" onclick="handleAuth()">สมัครสมาชิกใหม่</button>
-        </div>
-    </div>
+<body>
 
     <div id="splash">
         <i class="fa-solid fa-cloud splash-logo"></i>
         <h1 style="letter-spacing: 5px; margin-top: 15px;">PUFFLY</h1>
     </div>
 
-    <div id="homeView" class="view-section">
+    <div id="homeView" class="view-section active-view">
         <div class="reel-video">
-            <i class="fa-solid fa-play-circle" style="font-size: 80px; opacity: 0.2;"></i>
             <div class="reel-overlay">
                 <h3>@Puffly_Official</h3>
                 <p>สัมผัสโลกที่นุ่มนิ่มที่สุด ☁️✨</p>
             </div>
             <div class="reel-actions">
                 <div class="action-btn" onclick="openLive()"><i class="fa-solid fa-tower-broadcast" style="color:red;"></i><p style="font-size:10px;">Live</p></div>
-                <div class="action-btn" id="likeBtn" onclick="toggleLike()"><i class="fa-solid fa-cloud"></i><p style="font-size:10px;" id="likeCount">1.2K</p></div>
+                <div class="action-btn" id="likeBtn" onclick="toggleLike()"><i class="fa-solid fa-cloud"></i><p style="font-size:10px;" id="likeCount">0</p></div>
+                <div class="action-btn"><i class="fa-solid fa-comment-dots"></i><p style="font-size:10px;">24</p></div>
                 <div class="action-btn"><i class="fa-solid fa-share"></i><p style="font-size:10px;">แชร์</p></div>
             </div>
         </div>
@@ -111,170 +84,146 @@
         <div class="chat-header">
             <div style="width:40px; height:40px; border-radius:12px; background:var(--primary-grad); display:flex; align-items:center; justify-content:center; color:white;"><i class="fa-solid fa-cloud"></i></div>
             <div style="flex:1;"><b>ฝ่ายดูแลลูกค้า Puffly</b><p style="font-size:10px; color:green;">Online</p></div>
-            <div style="display: flex; gap: 15px; align-items: center;">
-                <i class="fa-solid fa-phone" style="color:var(--primary); cursor:pointer;" onclick="alert('กำลังเริ่มการโทรเสียง...')"></i>
-                <i class="fa-solid fa-video" style="color:var(--primary); cursor:pointer;" onclick="alert('กำลังเริ่มวิดีโอคอล...')"></i>
+            <div style="display: flex; gap: 15px;">
+                <i class="fa-solid fa-phone" style="color:var(--primary); cursor:pointer;" onclick="alert('Calling...')"></i>
+                <i class="fa-solid fa-video" style="color:var(--primary); cursor:pointer;" onclick="alert('Video Calling...')"></i>
             </div>
         </div>
         <div id="chatBox" class="chat-container">
-            <div class="bubble you">สวัสดีค่ะ! มีอะไรให้ช่วยแจ้งได้เลยนะคะ ☁️</div>
+            <div class="bubble you">สวัสดีค่ะ มีอะไรให้ Puffly ช่วยแจ้งไว้ได้เลยนะคะ ☁️</div>
         </div>
         <div style="padding:15px; background:white; border-top:1px solid #eee;">
-            <div style="display:flex; gap:20px; margin-bottom:10px; color:var(--primary); font-size:20px;">
-                <i class="fa-solid fa-image" onclick="document.getElementById('fileInp').click()"></i>
-                <i class="fa-solid fa-microphone" id="micBtn" onclick="recordVoice()"></i>
-            </div>
             <div style="display:flex; gap:10px; background:#f8f8f8; padding:10px 15px; border-radius:25px; align-items:center;">
                 <input type="text" id="msgInput" style="flex:1; background:none; border:none; outline:none;" placeholder="พิมพ์ข้อความ...">
                 <i class="fa-solid fa-paper-plane" style="color:var(--primary);" onclick="sendMsg()"></i>
             </div>
         </div>
-        <input type="file" id="fileInp" hidden onchange="handleFile(this)">
     </div>
 
     <div id="profileView" class="view-section">
         <div class="profile-header">
             <div class="profile-pic"><i class="fa-solid fa-user"></i></div>
-            <h2>@Puffly_Creator</h2>
+            <h2>@Creator_Asura</h2>
             <p style="color:var(--muted); font-size:12px;">ผู้สร้าง Asura's Ransom</p>
             <a href="admin.html" class="admin-secret-link">.</a>
         </div>
         <div class="wallet-card">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div><p style="font-size:10px;">Coins</p><h2 id="userCoins">100</h2></div>
-                <div><p style="font-size:10px;">ยอดถอนได้</p><h2>฿ <span id="userIncome">0.00</span></h2></div>
-                <button onclick="withdrawMoney()" style="background:white; color:var(--primary); border:none; padding:5px 12px; border-radius:10px; font-weight:bold; font-size:11px;">ถอนเงิน</button>
+            <p style="font-size:12px; opacity:0.8;">ยอดคงเหลือ (Coins)</p>
+            <h1 id="userCoins">...</h1>
+            <div style="margin-top:15px; display:flex; justify-content:space-between; align-items:center;">
+                <span>รายได้: ฿<span id="userIncome">0.00</span></span>
+                <button onclick="withdrawMoney()" style="background:white; color:var(--primary); border:none; padding:8px 15px; border-radius:12px; font-weight:bold; font-size:12px;">ถอนเงิน</button>
             </div>
-        </div>
-        <div class="video-grid">
-            <div class="video-item"><img src="https://picsum.photos/200/200?1"></div>
-            <div class="video-item"><img src="https://picsum.photos/200/200?2"></div>
-            <div class="video-item"><img src="https://picsum.photos/200/200?3"></div>
         </div>
     </div>
 
     <div id="liveOverlay">
         <div style="padding:20px; display:flex; justify-content:space-between; color:white; align-items:center;">
             <div style="background:red; padding:3px 10px; border-radius:5px; font-weight:bold; font-size:12px;">LIVE</div>
-            <div>🪙 <span id="liveCoins">100</span></div>
             <i class="fa-solid fa-xmark" onclick="closeLive()" style="font-size:25px;"></i>
         </div>
         <div id="liveComments" class="live-chat"></div>
-        <div style="padding:15px; display:flex; gap:10px; align-items:center; background:rgba(0,0,0,0.5);">
-            <input type="text" id="liveInp" style="flex:1; background:rgba(255,255,255,0.2); border:none; padding:12px; border-radius:25px; color:white; outline:none;" placeholder="พิมพ์...">
-            <button onclick="sendLiveMsg()" style="background:var(--primary); color:white; border:none; width:40px; height:40px; border-radius:50%;"><i class="fa-solid fa-paper-plane"></i></button>
+        <div style="padding:15px; display:flex; gap:15px; background:rgba(0,0,0,0.5); align-items:center;">
+            <input type="text" id="liveInp" style="flex:1; background:rgba(255,255,255,0.2); border:none; padding:12px; border-radius:25px; color:white;" placeholder="พูดคุย...">
             <i class="fa-solid fa-gift" style="color:#ffd700; font-size:30px;" onclick="toggleGiftPanel(event)"></i>
         </div>
         <div id="giftPanel" class="gift-panel">
-            <div class="gift-item" onclick="sendSpecificGift('🍭', 10, 2.5)"><span>🍭</span><small>10 C</small></div>
-            <div class="gift-item" onclick="sendSpecificGift('☁️', 50, 12.5)"><span>☁️</span><small>50 C</small></div>
-            <div class="gift-item" onclick="sendSpecificGift('👑', 500, 125)"><span>👑</span><small>500 C</small></div>
-            <div class="gift-item" onclick="sendSpecificGift('🕊️', 1000, 250)"><span>🕊️</span><small>1K C</small></div>
+            <div style="text-align:center;" onclick="sendGift('🍭', 10, 2)"><span>🍭</span><p>10 C</p></div>
+            <div style="text-align:center;" onclick="sendGift('☁️', 50, 10)"><span>☁️</span><p>50 C</p></div>
+            <div style="text-align:center;" onclick="sendGift('👑', 500, 100)"><span>👑</span><p>500 C</p></div>
+            <div style="text-align:center;" onclick="sendGift('🕊️', 1000, 200)"><span>🕊️</span><p>1K C</p></div>
         </div>
     </div>
 
     <nav class="bottom-nav">
         <div class="nav-item active" onclick="switchTab('homeView', this)"><i class="fa-solid fa-house"></i><span>หน้าแรก</span></div>
-        <div class="nav-item" onclick="alert('Search')"><i class="fa-solid fa-magnifying-glass"></i><span>ค้นหา</span></div>
-        <div class="nav-item" onclick="document.getElementById('fileInp').click()"><i class="fa-solid fa-circle-plus" style="font-size:35px; color:var(--primary);"></i></div>
-        <div class="nav-item" onclick="switchTab('inboxView', this)"><i class="fa-solid fa-comment-dots"></i><span>ข้อความ</span></div>
+        <div class="nav-item" onclick="switchTab('inboxView', this)"><i class="fa-solid fa-comment-dots"></i><span>แชท</span></div>
         <div class="nav-item" onclick="switchTab('profileView', this)"><i class="fa-solid fa-user"></i><span>โปรไฟล์</span></div>
     </nav>
 
-    <script>
-        let myCoins = 100;
+    <script type="module">
+        // --- 1. Firebase Setup ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, onSnapshot, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAT48SVlLZGo_XEYmf_K4MD06GqDLa_N9c",
+            authDomain: "puffly-86e43.firebaseapp.com",
+            projectId: "puffly-86e43",
+            storageBucket: "puffly-86e43.firebasestorage.app",
+            messagingSenderId: "841845436320",
+            appId: "1:841845436320:web:61e2ff1988c48bc634fec5"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const userRef = doc(db, "users", "default_user");
+
+        let myCoins = 0;
         let myIncome = 0;
-        let isLiked = false;
 
-        // --- Auth & Splash ---
-        function handleAuth() {
-            const auth = document.getElementById('authView');
-            const splash = document.getElementById('splash');
-            auth.style.opacity = '0';
-            setTimeout(() => {
-                auth.style.display = 'none';
-                splash.style.display = 'flex';
-                setTimeout(() => {
-                    splash.style.opacity = '0';
-                    setTimeout(() => { splash.style.display = 'none'; document.getElementById('homeView').classList.add('active-view'); }, 800);
-                }, 2000);
-            }, 500);
-        }
+        // ดึงข้อมูล Real-time จาก Firebase
+        onSnapshot(userRef, (snap) => {
+            if(snap.exists()){
+                myCoins = snap.data().coins;
+                myIncome = snap.data().income;
+                document.getElementById('userCoins').innerText = myCoins.toLocaleString();
+                document.getElementById('userIncome').innerText = myIncome.toFixed(2);
+            } else {
+                setDoc(userRef, { coins: 1000, income: 0 });
+            }
+        });
 
-        // --- Navigation ---
-        function switchTab(viewId, el) {
+        // --- 2. Functions ---
+        window.switchTab = (viewId, el) => {
             document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(viewId).classList.add('active-view');
             el.classList.add('active');
-        }
+        };
 
-        // --- Like Feature (Cloud) ---
-        function toggleLike() {
+        window.toggleLike = () => {
             const btn = document.getElementById('likeBtn');
             const count = document.getElementById('likeCount');
-            isLiked = !isLiked;
-            if(isLiked) {
-                btn.classList.add('liked');
-                count.innerText = "1.3K";
-            } else {
-                btn.classList.remove('liked');
-                count.innerText = "1.2K";
-            }
-        }
+            btn.classList.toggle('liked');
+            count.innerText = btn.classList.contains('liked') ? "1" : "0";
+        };
 
-        // --- Chat System ---
-        function sendMsg() {
+        window.sendMsg = () => {
             const inp = document.getElementById('msgInput');
             if(!inp.value) return;
-            appendBubble(inp.value, 'me');
-            inp.value = "";
-            setTimeout(() => appendBubble("Puffly รับทราบแล้วค่ะ ☁️", 'you'), 1000);
-        }
-        function appendBubble(txt, side) {
             const b = document.createElement('div');
-            b.className = `bubble ${side}`;
-            b.innerHTML = txt;
+            b.className = "bubble me"; b.innerText = inp.value;
             document.getElementById('chatBox').appendChild(b);
-            document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
-        }
-        function recordVoice() {
-            const btn = document.getElementById('micBtn');
-            btn.style.color = 'red';
-            setTimeout(() => {
-                btn.style.color = 'var(--primary)';
-                appendBubble(`<i class="fa-solid fa-play"></i> Voice Message (0:05)`, 'me');
-            }, 2000);
-        }
+            inp.value = "";
+        };
 
-        // --- Live & Gift ---
-        function openLive() { document.getElementById('liveOverlay').style.display = 'flex'; updateUI(); }
-        function closeLive() { document.getElementById('liveOverlay').style.display = 'none'; }
-        function toggleGiftPanel(e) { e.stopPropagation(); document.getElementById('giftPanel').classList.toggle('active'); }
-        function hideGiftPanel(e) { if(!document.getElementById('giftPanel').contains(e.target)) document.getElementById('giftPanel').classList.remove('active'); }
-        
-        function sendSpecificGift(icon, cost, val) {
+        window.openLive = () => document.getElementById('liveOverlay').style.display = 'flex';
+        window.closeLive = () => document.getElementById('liveOverlay').style.display = 'none';
+        window.toggleGiftPanel = (e) => { e.stopPropagation(); document.getElementById('giftPanel').classList.toggle('active'); };
+
+        window.sendGift = async (icon, cost, val) => {
             if(myCoins >= cost) {
-                myCoins -= cost;
-                myIncome += (val * 0.7);
-                updateUI();
+                await updateDoc(userRef, { 
+                    coins: myCoins - cost,
+                    income: myIncome + val
+                });
                 const d = document.createElement('div');
-                d.style.background = 'var(--primary-grad)';
-                d.style.padding = '8px'; d.style.borderRadius = '10px'; d.style.color = 'white';
-                d.innerHTML = `🎁 คุณส่ง ${icon} มูลค่า ${cost} Coins!`;
+                d.innerHTML = `🎁 คุณส่ง ${icon}`;
                 document.getElementById('liveComments').appendChild(d);
-                document.getElementById('giftPanel').classList.remove('active');
-            } else { alert("Coins ไม่พอค่ะ"); }
-        }
+            } else { alert("Coins ไม่พอ!"); }
+        };
 
-        function topUp(c, p) { if(confirm(`เติม ${c} Coins ราคา ฿${p}?`)) { myCoins += c; updateUI(); } }
-        function withdrawMoney() { if(myIncome <= 0) return alert("ยังไม่มีรายได้ค่ะ"); alert(`โอนเงิน ฿${myIncome.toFixed(2)} สำเร็จ!`); myIncome = 0; updateUI(); }
-        
-        function updateUI() {
-            document.getElementById('userCoins').innerText = myCoins;
-            document.getElementById('liveCoins').innerText = myCoins;
-            document.getElementById('userIncome').innerText = myIncome.toFixed(2);
-        }
+        window.withdrawMoney = async () => {
+            if(myIncome <= 0) return;
+            if(confirm("ยืนยันการถอนเงิน?")) await updateDoc(userRef, { income: 0 });
+        };
+
+        // ปิด Splash
+        setTimeout(() => {
+            document.getElementById('splash').style.opacity = '0';
+            setTimeout(() => document.getElementById('splash').style.display = 'none', 800);
+        }, 2000);
     </script>
 </body>
 </html>
