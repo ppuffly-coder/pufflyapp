@@ -15,7 +15,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-        /* --- 1. Auth Section (หน้าสมัครสมาชิก) --- */
+        /* --- Auth Section --- */
         #authView { position: fixed; inset: 0; background: white; z-index: 9000; display: flex; flex-direction: column; padding: 40px 25px; transition: 0.8s; }
         .auth-logo { text-align: center; margin-top: 60px; }
         .btn-auth { border: none; padding: 16px; border-radius: 30px; font-weight: bold; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; }
@@ -23,7 +23,7 @@
         .btn-google { background: #f8f9fa; color: #333; border: 1px solid #ddd; }
         .btn-main { background: var(--primary-grad); color: white; margin-top: 10px; }
 
-        /* --- 2. Splash Screen --- */
+        /* --- Splash Screen --- */
         #splash { position: fixed; inset: 0; background: var(--primary-grad); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; color: white; transition: 0.8s; }
         .splash-logo { font-size: 60px; animation: bounce 2s infinite; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
@@ -36,28 +36,32 @@
         .nav-item.active { color: var(--primary); }
         .nav-item i { font-size: 24px; }
 
-        /* --- 3. Home View (Reels) --- */
+        /* --- Home View (Reels) --- */
         #homeView { background: #000; overflow-y: scroll; scroll-snap-type: y mandatory; }
         .reel-video { position: relative; width: 100%; height: 100vh; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; color: white; }
         .reel-overlay { position: absolute; bottom: 100px; left: 15px; }
         .reel-actions { position: absolute; bottom: 120px; right: 15px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
+        .action-btn { cursor: pointer; text-align: center; }
+        .action-btn i { font-size: 30px; margin-bottom: 5px; transition: 0.3s; }
+        .action-btn.liked i { color: #87ceeb; filter: drop-shadow(0 0 5px #87ceeb); }
 
-        /* --- 4. Chat View (Full) --- */
+        /* --- Chat View --- */
         .chat-header { padding: 15px; background: white; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; }
         .chat-container { padding: 15px; display: flex; flex-direction: column; gap: 12px; height: calc(100vh - 215px); overflow-y: auto; background: var(--bg); }
         .bubble { max-width: 80%; padding: 10px 15px; border-radius: 18px; font-size: 14px; }
         .bubble.me { align-self: flex-end; background: var(--primary-grad); color: white; border-bottom-right-radius: 4px; }
         .bubble.you { align-self: flex-start; background: var(--bubble-you); border-bottom-left-radius: 4px; border: 1px solid rgba(255,143,163,0.2); }
 
-        /* --- 5. Profile & Wallet & Grid --- */
+        /* --- Profile & Admin Link --- */
         .profile-header { text-align: center; padding: 30px 20px; background: white; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
         .profile-pic { width: 90px; height: 90px; border-radius: 30px; background: var(--primary-grad); margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 40px; }
         .wallet-card { margin: -20px 20px 20px; background: var(--primary-grad); border-radius: 20px; padding: 20px; color: white; box-shadow: 0 10px 25px rgba(255,143,163,0.3); }
         .video-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: white; padding: 2px; margin-top: 15px; }
         .video-item { aspect-ratio: 1/1; background: #eee; position: relative; overflow: hidden; }
         .video-item img { width: 100%; height: 100%; object-fit: cover; }
+        .admin-secret-link { text-decoration: none; color: rgba(0,0,0,0.02); font-size: 10px; display: inline-block; margin-top: 5px; }
 
-        /* --- 6. Live Overlay & Gift --- */
+        /* --- Live Overlay & Gift --- */
         #liveOverlay { display: none; position: fixed; inset: 0; background: #000; z-index: 5000; flex-direction: column; }
         .live-chat { flex: 1; padding: 20px; display: flex; flex-direction: column; justify-content: flex-end; gap: 10px; color: white; overflow-y: auto; }
         .gift-panel { position: absolute; bottom: -100%; left: 0; right: 0; background: white; border-top-left-radius: 25px; border-top-right-radius: 25px; padding: 20px; transition: 0.4s; z-index: 5001; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
@@ -70,7 +74,7 @@
 
     <div id="authView">
         <div class="auth-logo">
-            <i class="fa-solid fa-dove" style="font-size: 60px; color: var(--primary);"></i>
+            <i class="fa-solid fa-cloud" style="font-size: 60px; color: var(--primary);"></i>
             <h1 style="margin-top: 20px; letter-spacing: 5px;">PUFFLY</h1>
             <p style="color: var(--muted); margin-top: 5px;">เริ่มต้นความสดใสไปกับเรา</p>
         </div>
@@ -81,13 +85,10 @@
             <input type="text" placeholder="เบอร์โทรศัพท์" style="padding: 16px; border-radius: 30px; border: 1px solid #eee; outline: none; text-align: center;">
             <button class="btn-auth btn-main" onclick="handleAuth()">สมัครสมาชิกใหม่</button>
         </div>
-        <p style="margin-top: auto; text-align: center; font-size: 11px; color: var(--muted);">
-            การเข้าใช้งานถือว่ายอมรับ <a href="#" style="color: var(--primary);">ข้อตกลงและนโยบายความเป็นส่วนตัว</a>
-        </p>
     </div>
 
     <div id="splash">
-        <i class="fa-solid fa-dove splash-logo"></i>
+        <i class="fa-solid fa-cloud splash-logo"></i>
         <h1 style="letter-spacing: 5px; margin-top: 15px;">PUFFLY</h1>
     </div>
 
@@ -96,24 +97,27 @@
             <i class="fa-solid fa-play-circle" style="font-size: 80px; opacity: 0.2;"></i>
             <div class="reel-overlay">
                 <h3>@Puffly_Official</h3>
-                <p>สัมผัสโลกของนกที่น่ารักที่สุด 🕊️✨</p>
+                <p>สัมผัสโลกที่นุ่มนิ่มที่สุด ☁️✨</p>
             </div>
             <div class="reel-actions">
-                <div class="action-btn" onclick="openLive()" style="cursor:pointer; text-align:center;"><i class="fa-solid fa-tower-broadcast" style="color:red; font-size:30px;"></i><p style="font-size:10px;">Live</p></div>
-                <i class="fa-solid fa-heart" style="font-size:30px;"></i>
-                <i class="fa-solid fa-share" style="font-size:30px;"></i>
+                <div class="action-btn" onclick="openLive()"><i class="fa-solid fa-tower-broadcast" style="color:red;"></i><p style="font-size:10px;">Live</p></div>
+                <div class="action-btn" id="likeBtn" onclick="toggleLike()"><i class="fa-solid fa-cloud"></i><p style="font-size:10px;" id="likeCount">1.2K</p></div>
+                <div class="action-btn"><i class="fa-solid fa-share"></i><p style="font-size:10px;">แชร์</p></div>
             </div>
         </div>
     </div>
 
     <div id="inboxView" class="view-section">
         <div class="chat-header">
-            <div style="width:40px; height:40px; border-radius:12px; background:var(--primary-grad); display:flex; align-items:center; justify-content:center; color:white;"><i class="fa-solid fa-dove"></i></div>
+            <div style="width:40px; height:40px; border-radius:12px; background:var(--primary-grad); display:flex; align-items:center; justify-content:center; color:white;"><i class="fa-solid fa-cloud"></i></div>
             <div style="flex:1;"><b>ฝ่ายดูแลลูกค้า Puffly</b><p style="font-size:10px; color:green;">Online</p></div>
-            <i class="fa-solid fa-video" style="color:var(--primary);"></i>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <i class="fa-solid fa-phone" style="color:var(--primary); cursor:pointer;" onclick="alert('กำลังเริ่มการโทรเสียง...')"></i>
+                <i class="fa-solid fa-video" style="color:var(--primary); cursor:pointer;" onclick="alert('กำลังเริ่มวิดีโอคอล...')"></i>
+            </div>
         </div>
         <div id="chatBox" class="chat-container">
-            <div class="bubble you">สวัสดีค่ะ! มีอะไรให้ช่วยแจ้งไว้ได้เลยนะคะ 🎀</div>
+            <div class="bubble you">สวัสดีค่ะ! มีอะไรให้ช่วยแจ้งได้เลยนะคะ ☁️</div>
         </div>
         <div style="padding:15px; background:white; border-top:1px solid #eee;">
             <div style="display:flex; gap:20px; margin-bottom:10px; color:var(--primary); font-size:20px;">
@@ -133,6 +137,7 @@
             <div class="profile-pic"><i class="fa-solid fa-user"></i></div>
             <h2>@Puffly_Creator</h2>
             <p style="color:var(--muted); font-size:12px;">ผู้สร้าง Asura's Ransom</p>
+            <a href="admin.html" class="admin-secret-link">.</a>
         </div>
         <div class="wallet-card">
             <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -141,18 +146,10 @@
                 <button onclick="withdrawMoney()" style="background:white; color:var(--primary); border:none; padding:5px 12px; border-radius:10px; font-weight:bold; font-size:11px;">ถอนเงิน</button>
             </div>
         </div>
-        <div style="padding:0 15px; font-weight:bold;">วิดีโอของฉัน</div>
         <div class="video-grid">
-            <div class="video-item"><img src="https://picsum.photos/200/200?1"><i class="fa-solid fa-play" style="position:absolute; top:5px; left:5px; color:white; font-size:10px;"> 10K</i></div>
+            <div class="video-item"><img src="https://picsum.photos/200/200?1"></div>
             <div class="video-item"><img src="https://picsum.photos/200/200?2"></div>
             <div class="video-item"><img src="https://picsum.photos/200/200?3"></div>
-        </div>
-        <div style="padding:15px; background:white; margin:15px; border-radius:20px;">
-            <p style="font-size:13px; font-weight:bold; margin-bottom:10px;">Puffly Shop</p>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                <div onclick="topUp(100, 35)" style="border:1px solid #eee; padding:10px; border-radius:15px; text-align:center;">🪙 100 <br><b style="color:var(--primary);">฿35</b></div>
-                <div onclick="topUp(500, 150)" style="border:1px solid #eee; padding:10px; border-radius:15px; text-align:center;">🪙 500 <br><b style="color:var(--primary);">฿150</b></div>
-            </div>
         </div>
     </div>
 
@@ -169,26 +166,27 @@
             <i class="fa-solid fa-gift" style="color:#ffd700; font-size:30px;" onclick="toggleGiftPanel(event)"></i>
         </div>
         <div id="giftPanel" class="gift-panel">
-            <div class="gift-item" onclick="sendSpecificGift('🎀', 10, 2.5)"><span>🎀</span><small>10 C</small></div>
-            <div class="gift-item" onclick="sendSpecificGift('🧸', 50, 12.5)"><span>🧸</span><small>50 C</small></div>
+            <div class="gift-item" onclick="sendSpecificGift('🍭', 10, 2.5)"><span>🍭</span><small>10 C</small></div>
+            <div class="gift-item" onclick="sendSpecificGift('☁️', 50, 12.5)"><span>☁️</span><small>50 C</small></div>
             <div class="gift-item" onclick="sendSpecificGift('👑', 500, 125)"><span>👑</span><small>500 C</small></div>
             <div class="gift-item" onclick="sendSpecificGift('🕊️', 1000, 250)"><span>🕊️</span><small>1K C</small></div>
         </div>
     </div>
 
-    <div class="bottom-nav">
+    <nav class="bottom-nav">
         <div class="nav-item active" onclick="switchTab('homeView', this)"><i class="fa-solid fa-house"></i><span>หน้าแรก</span></div>
         <div class="nav-item" onclick="alert('Search')"><i class="fa-solid fa-magnifying-glass"></i><span>ค้นหา</span></div>
         <div class="nav-item" onclick="document.getElementById('fileInp').click()"><i class="fa-solid fa-circle-plus" style="font-size:35px; color:var(--primary);"></i></div>
         <div class="nav-item" onclick="switchTab('inboxView', this)"><i class="fa-solid fa-comment-dots"></i><span>ข้อความ</span></div>
         <div class="nav-item" onclick="switchTab('profileView', this)"><i class="fa-solid fa-user"></i><span>โปรไฟล์</span></div>
-    </div>
+    </nav>
 
     <script>
         let myCoins = 100;
         let myIncome = 0;
+        let isLiked = false;
 
-        // --- Auth Logic ---
+        // --- Auth & Splash ---
         function handleAuth() {
             const auth = document.getElementById('authView');
             const splash = document.getElementById('splash');
@@ -198,10 +196,7 @@
                 splash.style.display = 'flex';
                 setTimeout(() => {
                     splash.style.opacity = '0';
-                    setTimeout(() => {
-                        splash.style.display = 'none';
-                        document.getElementById('homeView').classList.add('active-view');
-                    }, 800);
+                    setTimeout(() => { splash.style.display = 'none'; document.getElementById('homeView').classList.add('active-view'); }, 800);
                 }, 2000);
             }, 500);
         }
@@ -212,6 +207,20 @@
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(viewId).classList.add('active-view');
             el.classList.add('active');
+        }
+
+        // --- Like Feature (Cloud) ---
+        function toggleLike() {
+            const btn = document.getElementById('likeBtn');
+            const count = document.getElementById('likeCount');
+            isLiked = !isLiked;
+            if(isLiked) {
+                btn.classList.add('liked');
+                count.innerText = "1.3K";
+            } else {
+                btn.classList.remove('liked');
+                count.innerText = "1.2K";
+            }
         }
 
         // --- Chat System ---
@@ -229,12 +238,6 @@
             document.getElementById('chatBox').appendChild(b);
             document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
         }
-        function handleFile(input) {
-            if(input.files[0]) {
-                const url = URL.createObjectURL(input.files[0]);
-                appendBubble(`<img src="${url}" style="width:100%; border-radius:10px;">`, 'me');
-            }
-        }
         function recordVoice() {
             const btn = document.getElementById('micBtn');
             btn.style.color = 'red';
@@ -247,15 +250,6 @@
         // --- Live & Gift ---
         function openLive() { document.getElementById('liveOverlay').style.display = 'flex'; updateUI(); }
         function closeLive() { document.getElementById('liveOverlay').style.display = 'none'; }
-        function sendLiveMsg() {
-            const inp = document.getElementById('liveInp');
-            if(!inp.value) return;
-            const d = document.createElement('div');
-            d.innerHTML = `<b>Me:</b> ${inp.value}`;
-            document.getElementById('liveComments').appendChild(d);
-            inp.value = '';
-            document.getElementById('liveComments').scrollTop = document.getElementById('liveComments').scrollHeight;
-        }
         function toggleGiftPanel(e) { e.stopPropagation(); document.getElementById('giftPanel').classList.toggle('active'); }
         function hideGiftPanel(e) { if(!document.getElementById('giftPanel').contains(e.target)) document.getElementById('giftPanel').classList.remove('active'); }
         
@@ -266,16 +260,16 @@
                 updateUI();
                 const d = document.createElement('div');
                 d.style.background = 'var(--primary-grad)';
-                d.style.padding = '8px'; d.style.borderRadius = '10px';
+                d.style.padding = '8px'; d.style.borderRadius = '10px'; d.style.color = 'white';
                 d.innerHTML = `🎁 คุณส่ง ${icon} มูลค่า ${cost} Coins!`;
                 document.getElementById('liveComments').appendChild(d);
                 document.getElementById('giftPanel').classList.remove('active');
             } else { alert("Coins ไม่พอค่ะ"); }
         }
 
-        // --- Wallet ---
         function topUp(c, p) { if(confirm(`เติม ${c} Coins ราคา ฿${p}?`)) { myCoins += c; updateUI(); } }
         function withdrawMoney() { if(myIncome <= 0) return alert("ยังไม่มีรายได้ค่ะ"); alert(`โอนเงิน ฿${myIncome.toFixed(2)} สำเร็จ!`); myIncome = 0; updateUI(); }
+        
         function updateUI() {
             document.getElementById('userCoins').innerText = myCoins;
             document.getElementById('liveCoins').innerText = myCoins;
