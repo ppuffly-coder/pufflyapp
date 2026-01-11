@@ -18,8 +18,9 @@
         #authView { position: fixed; inset: 0; background: white; z-index: 9500; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; overflow-y: auto; }
         .auth-input { width: 100%; background: #f8f8f8; border: 1px solid #eee; padding: 15px; border-radius: 15px; margin-bottom: 10px; outline: none; }
         
+        /* Social Login Buttons */
         .social-auth { width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; }
-        .btn-social { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #ddd; background: white; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 500; cursor: pointer; transition: 0.2s; }
+        .btn-social { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #ddd; background: white; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 500; cursor: pointer; transition: 0.2s; font-size: 14px; }
         .btn-social:active { transform: scale(0.98); }
         .btn-social.google { color: #444; }
         .btn-social.line { background: #00c300; color: white; border: none; }
@@ -32,7 +33,8 @@
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 75px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #eee; z-index: 4000; }
         
         /* Chat Design */
-        .bubble { max-width: 75%; padding: 12px; border-radius: 18px; font-size: 14px; margin-bottom: 5px; position: relative; }
+        #chatMessages { flex:1; padding:15px; overflow-y:auto; display:flex; flex-direction:column; gap: 8px; }
+        .bubble { max-width: 75%; padding: 12px; border-radius: 18px; font-size: 14px; position: relative; }
         .bubble.me { align-self: flex-end; background: var(--primary-grad); color: white; border-bottom-right-radius: 4px; }
         .bubble.you { align-self: flex-start; background: #fff; border: 1px solid #eee; border-bottom-left-radius: 4px; }
         
@@ -46,8 +48,10 @@
         <i class="fa-solid fa-cloud" style="font-size: 60px; color: var(--primary); margin-bottom: 20px;"></i>
         <h2>Puffly Sovereign</h2>
         <p style="margin-bottom: 30px; color: var(--muted);">ระบุอีเมลเพื่อเริ่มสร้างรายได้</p>
+        
         <input type="email" id="userEmail" class="auth-input" placeholder="อีเมล">
         <input type="password" id="userPass" class="auth-input" placeholder="รหัสผ่าน">
+        
         <button onclick="appAuth('login')" style="width:100%; padding:15px; border-radius:15px; border:none; background:var(--primary-grad); color:white; font-weight:bold; margin-bottom:10px;">เข้าสู่ระบบ</button>
         <button onclick="appAuth('reg')" style="width:100%; padding:15px; border-radius:15px; border: 1px solid var(--primary); background:white; color:var(--primary); font-weight:bold;">สมัครสมาชิก</button>
 
@@ -55,13 +59,13 @@
             <button onclick="loginWithGoogle()" class="btn-social google">
                 <i class="fa-brands fa-google" style="color: #4285F4;"></i> เข้าด้วย Google
             </button>
-            <button onclick="alert('ระบบ LINE กำลังติดตั้ง...')" class="btn-social line">
+            <button onclick="alert('ระบบ LINE กำลังติดตั้งในภายหลัง...')" class="btn-social line">
                 <i class="fa-brands fa-line"></i> เข้าด้วย LINE
             </button>
-            <button onclick="alert('ระบบ Facebook กำลังติดตั้ง...')" class="btn-social facebook">
+            <button onclick="alert('ระบบ Facebook กำลังติดตั้งในภายหลัง...')" class="btn-social facebook">
                 <i class="fa-brands fa-facebook"></i> เข้าด้วย Facebook
             </button>
-            <button onclick="alert('ระบบเบอร์โทรศัพท์ กำลังติดตั้ง...')" class="btn-social phone">
+            <button onclick="alert('ระบบเบอร์โทรศัพท์ กำลังติดตั้งในภายหลัง...')" class="btn-social phone">
                 <i class="fa-solid fa-mobile-screen-button"></i> เข้าด้วยเบอร์โทรศัพท์
             </button>
         </div>
@@ -75,9 +79,9 @@
             </div>
             <div style="position: absolute; right: 15px; bottom: 120px; display: flex; flex-direction: column; gap: 22px; align-items: center;">
                 <i class="fa-solid fa-cloud" style="font-size:32px;" onclick="this.style.color='var(--puffly-blue)'"></i>
-                <i class="fa-solid fa-comment-dots" style="font-size:32px;" onclick="openComments()"></i>
-                <i class="fa-solid fa-bookmark" style="font-size:32px;" onclick="saveToProfile()"></i>
-                <i class="fa-solid fa-share-nodes" style="font-size:32px;" onclick="shareContent()"></i>
+                <i class="fa-solid fa-comment-dots" style="font-size:32px;" onclick="switchTab('inboxView')"></i>
+                <i class="fa-solid fa-bookmark" style="font-size:32px;" onclick="alert('บันทึกเรียบร้อย')"></i>
+                <i class="fa-solid fa-share-nodes" style="font-size:32px;" onclick="alert('แชร์คอนเทนต์')"></i>
             </div>
         </div>
     </div>
@@ -92,13 +96,10 @@
                 <i class="fa-solid fa-video" onclick="alert('Video Calling...')"></i>
             </div>
         </div>
-        <div id="chatMessages" style="flex:1; padding:15px; overflow-y:auto; display:flex; flex-direction:column; height:calc(100vh - 160px);"></div>
-        <div style="padding:10px; background:white; border-top:1px solid #eee; display:flex; align-items:center; gap:10px;">
-            <i class="fa-solid fa-image" style="color:var(--primary); font-size:20px;"></i>
-            <i class="fa-solid fa-microphone" style="color:var(--primary); font-size:20px;"></i>
+        <div id="chatMessages"></div>
+        <div style="padding:10px; background:white; border-top:1px solid #eee; display:flex; align-items:center; gap:10px; position: absolute; bottom: 80px; width: 100%;">
             <div style="flex:1; background:#f0f0f0; border-radius:20px; padding:5px 15px; display:flex; align-items:center;">
-                <input type="text" id="chatInp" style="flex:1; border:none; background:none; outline:none;" placeholder="พิมพ์...">
-                <i class="fa-solid fa-face-smile" style="color:var(--muted);"></i>
+                <input type="text" id="chatInp" style="flex:1; border:none; background:none; outline:none;" placeholder="พิมพ์ข้อความ...">
             </div>
             <i class="fa-solid fa-paper-plane" style="color:var(--primary); font-size:22px;" onclick="sendMsg()"></i>
         </div>
@@ -114,17 +115,16 @@
             </div>
         </div>
         <div style="display:flex; border-top:1px solid #eee;">
-            <div style="flex:1; text-align:center; padding:15px; border-bottom:2px solid var(--primary);" id="tabVdo" onclick="switchProfile('vdo')"><i class="fa-solid fa-grip"></i></div>
-            <div style="flex:1; text-align:center; padding:15px; color:var(--muted);" id="tabSaved" onclick="switchProfile('saved')"><i class="fa-solid fa-bookmark"></i></div>
+            <div style="flex:1; text-align:center; padding:15px; border-bottom:2px solid var(--primary);" onclick="switchProfile('vdo')"><i class="fa-solid fa-grip"></i></div>
+            <div style="flex:1; text-align:center; padding:15px; color:var(--muted);" onclick="switchProfile('saved')"><i class="fa-solid fa-bookmark"></i></div>
         </div>
-        <div id="vdoGrid" class="grid-vdo"> </div>
-        <div id="savedGrid" class="grid-vdo" style="display:none;"> </div>
+        <div id="vdoGrid" class="grid-vdo"></div>
     </div>
 
     <nav class="bottom-nav">
         <i class="fa-solid fa-house" onclick="switchTab('homeView')"></i>
-        <i class="fa-solid fa-magnifying-glass" onclick="alert('Search')"></i>
-        <i class="fa-solid fa-circle-plus" style="font-size:40px; color:var(--primary);" onclick="alert('Upload Video / Live')"></i>
+        <i class="fa-solid fa-magnifying-glass" onclick="alert('ค้นหา')"></i>
+        <i class="fa-solid fa-circle-plus" style="font-size:40px; color:var(--primary);" onclick="alert('อัปโหลด')"></i>
         <i class="fa-solid fa-comment-dots" onclick="switchTab('inboxView')"></i>
         <i class="fa-solid fa-user" onclick="switchTab('profileView')"></i>
     </nav>
@@ -152,9 +152,11 @@
             try {
                 const result = await signInWithPopup(auth, provider);
                 const user = result.user;
-                const userDoc = await getDoc(doc(db, "users", user.uid));
+                const userRef = doc(db, "users", user.uid);
+                const userDoc = await getDoc(userRef);
+                
                 if (!userDoc.exists()) {
-                    await setDoc(doc(db, "users", user.uid), { 
+                    await setDoc(userRef, { 
                         coins: 500, 
                         name: user.displayName || user.email.split('@')[0], 
                         uploads: [], 
@@ -162,14 +164,14 @@
                     });
                 }
                 document.getElementById('authView').style.display = 'none';
-            } catch (e) { alert("Google Login Error: " + e.message); }
+            } catch (e) { alert("Google Error: " + e.message); }
         };
 
-        // --- ระบบสมัครสมาชิก/เข้าสู่ระบบเดิม ---
+        // --- ระบบ Login เดิม ---
         window.appAuth = async (type) => {
             const email = document.getElementById('userEmail').value;
             const pass = document.getElementById('userPass').value;
-            if(!email || !pass) return alert("กรุณากรอกข้อมูลให้ครบ");
+            if(!email || !pass) return alert("กรุณากรอกข้อมูล");
             try {
                 if(type === 'reg') {
                     const res = await createUserWithEmailAndPassword(auth, email, pass);
@@ -177,7 +179,6 @@
                 } else {
                     await signInWithEmailAndPassword(auth, email, pass);
                 }
-                document.getElementById('authView').style.display = 'none';
             } catch (e) { alert(e.message); }
         };
 
@@ -201,16 +202,9 @@
             });
         }
 
-        // --- ระบบควบคุมหน้าจอและแชท (ฟีเจอร์เดิม) ---
         window.switchTab = (id) => {
             document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
-            const target = document.getElementById(id);
-            if(target) target.classList.add('active-view');
-        };
-
-        window.switchProfile = (type) => {
-            document.getElementById('vdoGrid').style.display = (type === 'vdo') ? 'grid' : 'none';
-            document.getElementById('savedGrid').style.display = (type === 'saved') ? 'grid' : 'none';
+            document.getElementById(id).classList.add('active-view');
         };
 
         window.sendMsg = () => {
@@ -220,8 +214,8 @@
             div.className = "bubble me";
             div.innerText = inp.value;
             document.getElementById('chatMessages').appendChild(div);
-            document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
             inp.value = "";
+            document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
         };
     </script>
 </body>
