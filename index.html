@@ -21,26 +21,35 @@
         .btn-social { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #ddd; background: white; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 500; cursor: pointer; }
 
         /* Layout */
-        .view-section { height: 100vh; display: none; overflow-y: auto; padding-bottom: 80px; position: relative; }
-        .active-view { display: flex; flex-direction: column; }
+        .view-section { height: 100vh; display: none; flex-direction: column; overflow-y: auto; padding-bottom: 80px; position: relative; }
+        .active-view { display: flex; }
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 75px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #eee; z-index: 4000; }
         
-        /* UI Elements */
+        /* Video & Live UI */
         .follow-btn { background: var(--primary); color: white; border: none; padding: 5px 12px; border-radius: 20px; font-size: 12px; margin-top: 5px; }
         .live-badge { background: var(--live-red); color: white; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; position: absolute; top: 20px; left: 20px; }
+        
+        /* Chat UI */
         .chat-input-bar { padding: 10px; background: white; border-top: 1px solid #eee; display: flex; align-items: center; gap: 12px; position: fixed; bottom: 75px; width: 100%; }
         #chatMessages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; background: #fafafa; }
         .bubble { max-width: 75%; padding: 12px; border-radius: 18px; font-size: 14px; position: relative; }
         .bubble.me { align-self: flex-end; background: var(--primary-grad); color: white; border-bottom-right-radius: 4px; }
         .bubble.you { align-self: flex-start; background: #fff; border: 1px solid #eee; border-bottom-left-radius: 4px; }
+
+        /* Profile Grid */
         .grid-vdo { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 2px; }
         .vdo-box { aspect-ratio: 9/16; background: #eee; border: 1px solid #ddd; }
+        
+        /* Upload Menu */
+        #uploadMenu { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:5000; align-items:center; justify-content:center; }
+        .menu-card { background:white; width:80%; border-radius:20px; padding:20px; display:flex; flex-direction:column; gap:15px; }
     </style>
 </head>
 <body>
     <div id="authView">
         <i class="fa-solid fa-cloud" style="font-size: 60px; color: var(--primary); margin-bottom: 20px;"></i>
         <h2>Puffly Sovereign</h2>
+        <p style="margin-bottom: 20px; color: var(--muted);">ระบุอีเมลเพื่อเริ่มสร้างรายได้</p>
         <input type="email" id="userEmail" class="auth-input" placeholder="อีเมล">
         <input type="password" id="userPass" class="auth-input" placeholder="รหัสผ่าน">
         <button onclick="appAuth('login')" style="width:100%; padding:15px; border-radius:15px; border:none; background:var(--primary-grad); color:white; font-weight:bold; margin-bottom:10px;">เข้าสู่ระบบ</button>
@@ -61,35 +70,33 @@
                         <button class="follow-btn" onclick="this.innerText='ติดตามแล้ว'">ติดตาม</button>
                     </div>
                 </div>
+                <p style="margin-top:10px; font-size:14px;">Welcome to Asura's Ransom World! ☁️</p>
             </div>
             <div style="position:absolute; right:15px; bottom:120px; display:flex; flex-direction:column; gap:22px; align-items:center;">
-                <div onclick="alert('ส่งของขวัญ')"><i class="fa-solid fa-gift" style="font-size:28px; color:#ffd700"></i></div>
+                <div onclick="alert('ส่งของขวัญ')"><i class="fa-solid fa-gift" style="font-size:28px; color:#ffd700"></i><p style="font-size:10px;">ของขวัญ</p></div>
                 <i class="fa-solid fa-comment-dots" style="font-size:32px;" onclick="switchTab('inboxView')"></i>
                 <i class="fa-solid fa-bookmark" style="font-size:32px;" onclick="alert('บันทึกแล้ว')"></i>
+                <i class="fa-solid fa-share-nodes" style="font-size:32px;" onclick="alert('แชร์')"></i>
             </div>
         </div>
     </div>
 
-    <div id="uploadMenu" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:5000; align-items:center; justify-content:center;">
-        <div style="background:white; width:80%; border-radius:20px; padding:20px; display:flex; flex-direction:column; gap:15px;">
-            <button onclick="alert('เปิดกล้อง...'); closeUpload()" style="padding:15px; border-radius:10px; border:none; background:#f0f0f0;"><i class="fa-solid fa-camera"></i> ถ่ายวิดีโอใหม่</button>
-            <button onclick="alert('เลือกไฟล์...'); closeUpload()" style="padding:15px; border-radius:10px; border:none; background:#f0f0f0;"><i class="fa-solid fa-image"></i> เลือกวิดีโอที่มีอยู่</button>
-            <button onclick="closeUpload()" style="color:red; border:none; background:none;">ยกเลิก</button>
-        </div>
-    </div>
     <div id="inboxView" class="view-section">
         <div style="display:flex; align-items:center; padding:15px; background:white; border-bottom:1px solid #eee;">
-            <b>Support / Chat</b>
+            <div style="width:35px; height:35px; border-radius:50%; background:var(--primary-grad); margin-right:10px;"></div>
+            <b>Support / แชทเพื่อน</b>
         </div>
-        <div id="chatMessages"></div>
+        <div id="chatMessages">
+            <div class="bubble you">สวัสดี! ส่งรูปภาพหรือเสียงมาคุยกับเราได้นะ</div>
+        </div>
         <div class="chat-input-bar">
             <div style="display:flex; gap:15px; color:var(--primary); font-size:20px;">
-                <i class="fa-solid fa-image" onclick="alert('ส่งรูป')"></i>
-                <i class="fa-solid fa-microphone" onclick="alert('ส่งเสียง')"></i>
+                <i class="fa-solid fa-image" onclick="alert('เลือกรูปภาพ')"></i>
+                <i class="fa-solid fa-microphone" onclick="alert('บันทึกเสียง')"></i>
             </div>
             <div style="flex:1; background:#f0f0f0; border-radius:20px; padding:8px 15px; display:flex; align-items:center;">
-                <input type="text" id="chatInp" style="flex:1; border:none; background:none; outline:none;" placeholder="พิมพ์...">
-                <i class="fa-solid fa-face-smile" style="color:var(--muted); margin-left:10px;" onclick="alert('อิโมจิ')"></i>
+                <input type="text" id="chatInp" style="flex:1; border:none; background:none; outline:none;" placeholder="พิมพ์ข้อความ...">
+                <i class="fa-solid fa-face-smile" style="color:var(--muted); margin-left:10px;" onclick="alert('สติกเกอร์')"></i>
             </div>
             <i class="fa-solid fa-paper-plane" style="color:var(--primary); font-size:22px;" onclick="sendMsg()"></i>
         </div>
@@ -104,13 +111,23 @@
                 <div><b>12.5K</b><p style="font-size:10px;">ผู้ติดตาม</p></div>
                 <div><b id="profCoins">0</b><p style="font-size:10px;">Coins</p></div>
             </div>
-            <button onclick="alert('Edit')" style="margin-top:15px; width:60%; padding:8px; border-radius:8px; border:1px solid #ddd; background:white;">แก้ไขโปรไฟล์</button>
+            <button onclick="alert('แก้ไขโปรไฟล์')" style="margin-top:15px; width:60%; padding:8px; border-radius:8px; border:1px solid #ddd; background:white;">แก้ไขโปรไฟล์</button>
         </div>
         <div style="display:flex; border-top:1px solid #eee;">
             <div style="flex:1; text-align:center; padding:15px; border-bottom:2px solid var(--primary);"><i class="fa-solid fa-grip"></i></div>
             <div style="flex:1; text-align:center; padding:15px; color:var(--muted);"><i class="fa-solid fa-heart"></i></div>
         </div>
-        <div class="grid-vdo" id="vdoGrid"></div>
+        <div class="grid-vdo" id="vdoGrid">
+            <div class="vdo-box"></div><div class="vdo-box"></div><div class="vdo-box"></div>
+        </div>
+    </div>
+
+    <div id="uploadMenu">
+        <div class="menu-card">
+            <button onclick="alert('เปิดกล้องถ่ายวิดีโอ...'); closeUpload()" style="padding:15px; border-radius:10px; border:none; background:#f0f0f0;"><i class="fa-solid fa-camera"></i> ถ่ายวิดีโอใหม่</button>
+            <button onclick="alert('เลือกจากคลังวิดีโอ...'); closeUpload()" style="padding:15px; border-radius:10px; border:none; background:#f0f0f0;"><i class="fa-solid fa-image"></i> เลือกวิดีโอที่มีอยู่</button>
+            <button onclick="closeUpload()" style="color:red; border:none; background:none; margin-top:10px;">ยกเลิก</button>
+        </div>
     </div>
 
     <nav class="bottom-nav">
@@ -120,6 +137,7 @@
         <i class="fa-solid fa-comment-dots" onclick="switchTab('inboxView')"></i>
         <i class="fa-solid fa-user" onclick="switchTab('profileView')"></i>
     </nav>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -148,12 +166,13 @@
                 if (!snap.exists()) {
                     await setDoc(userRef, { coins: 500, name: user.displayName || "User", uploads: [], saved: [] });
                 }
-            } catch (e) { alert(e.message); }
+            } catch (e) { alert("Google Error: " + e.message); }
         };
 
         window.appAuth = async (type) => {
             const email = document.getElementById('userEmail').value;
             const pass = document.getElementById('userPass').value;
+            if(!email || !pass) return alert("กรุณากรอกข้อมูลให้ครบ");
             try {
                 if(type === 'reg') {
                     const res = await createUserWithEmailAndPassword(auth, email, pass);
