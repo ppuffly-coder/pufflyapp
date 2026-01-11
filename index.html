@@ -15,9 +15,18 @@
         body { background-color: var(--bg); color: var(--text); height: 100vh; overflow: hidden; }
 
         /* Auth View */
-        #authView { position: fixed; inset: 0; background: white; z-index: 9500; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
+        #authView { position: fixed; inset: 0; background: white; z-index: 9500; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; overflow-y: auto; }
         .auth-input { width: 100%; background: #f8f8f8; border: 1px solid #eee; padding: 15px; border-radius: 15px; margin-bottom: 10px; outline: none; }
         
+        /* เพิ่มสไตล์ Social Login */
+        .social-auth { width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; }
+        .btn-social { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #ddd; background: white; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 500; cursor: pointer; transition: 0.2s; }
+        .btn-social:active { transform: scale(0.98); }
+        .btn-social.google { color: #444; }
+        .btn-social.line { background: #00c300; color: white; border: none; }
+        .btn-social.facebook { background: #1877f2; color: white; border: none; }
+        .btn-social.phone { background: #333; color: white; border: none; }
+
         /* App Layout */
         .view-section { height: 100vh; display: none; overflow-y: auto; padding-bottom: 80px; position: relative; }
         .active-view { display: block; }
@@ -38,11 +47,29 @@
         <i class="fa-solid fa-cloud" style="font-size: 60px; color: var(--primary); margin-bottom: 20px;"></i>
         <h2>Puffly Sovereign</h2>
         <p style="margin-bottom: 30px; color: var(--muted);">ระบุอีเมลเพื่อเริ่มสร้างรายได้</p>
+        
         <input type="email" id="userEmail" class="auth-input" placeholder="อีเมล">
         <input type="password" id="userPass" class="auth-input" placeholder="รหัสผ่าน">
+        
         <button onclick="appAuth('login')" style="width:100%; padding:15px; border-radius:15px; border:none; background:var(--primary-grad); color:white; font-weight:bold; margin-bottom:10px;">เข้าสู่ระบบ</button>
         <button onclick="appAuth('reg')" style="width:100%; padding:15px; border-radius:15px; border: 1px solid var(--primary); background:white; color:var(--primary); font-weight:bold;">สมัครสมาชิก</button>
+
+        <div class="social-auth">
+            <button onclick="loginWithGoogle()" class="btn-social google">
+                <i class="fa-brands fa-google" style="color: #4285F4;"></i> เข้าด้วย Google
+            </button>
+            <button onclick="alert('ระบบ LINE กำลังติดตั้ง...')" class="btn-social line">
+                <i class="fa-brands fa-line"></i> เข้าด้วย LINE
+            </button>
+            <button onclick="alert('ระบบ Facebook กำลังติดตั้ง...')" class="btn-social facebook">
+                <i class="fa-brands fa-facebook"></i> เข้าด้วย Facebook
+            </button>
+            <button onclick="alert('ระบบเบอร์โทรศัพท์ กำลังติดตั้ง...')" class="btn-social phone">
+                <i class="fa-solid fa-mobile-screen-button"></i> เข้าด้วยเบอร์โทรศัพท์
+            </button>
+        </div>
     </div>
+
     <div id="homeView" class="view-section active-view">
         <div style="background: #000; height: 100%; display: flex; align-items: center; justify-content: center; color: white;">
             <div style="position: absolute; bottom: 100px; left: 15px;">
@@ -57,7 +84,6 @@
             </div>
         </div>
     </div>
-
     <div id="inboxView" class="view-section">
         <div style="display:flex; align-items:center; justify-content:space-between; padding:15px; background:white; border-bottom:1px solid #eee;">
             <div style="display:flex; align-items:center; gap:10px;">
@@ -107,7 +133,7 @@
     </nav>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -123,10 +149,30 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // --- ระบบสมัครสมาชิก/เข้าสู่ระบบ ---
+        // --- ระบบ Google Login (เพิ่มใหม่) ---
+        window.loginWithGoogle = async () => {
+            const provider = new GoogleAuthProvider();
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (!userDoc.exists()) {
+                    await setDoc(doc(db, "users", user.uid), { 
+                        coins: 500, 
+                        name: user.displayName || user.email.split('@')[0], 
+                        uploads: [], 
+                        saved: [] 
+                    });
+                }
+                document.getElementById('authView').style.display = 'none';
+            } catch (e) { alert("Google Login Error: " + e.message); }
+        };
+
+        // --- ระบบสมัครสมาชิก/เข้าสู่ระบบเดิม ---
         window.appAuth = async (type) => {
             const email = document.getElementById('userEmail').value;
             const pass = document.getElementById('userPass').value;
+            if(!email || !pass) return alert("กรุณากรอกข้อมูลให้ครบ");
             try {
                 if(type === 'reg') {
                     const res = await createUserWithEmailAndPassword(auth, email, pass);
@@ -138,11 +184,12 @@
             } catch (e) { alert(e.message); }
         };
 
-        // --- ตรวจสอบสถานะการเข้าสู่ระบบตลอดเวลา ---
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('authView').style.display = 'none';
                 syncUserData(user.uid);
+            } else {
+                document.getElementById('authView').style.display = 'flex';
             }
         });
 
@@ -157,7 +204,6 @@
             });
         }
 
-        // --- ระบบสลับหน้า ---
         window.switchTab = (id) => {
             document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
             document.getElementById(id).classList.add('active-view');
