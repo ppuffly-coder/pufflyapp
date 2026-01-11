@@ -15,111 +15,102 @@
         body { background-color: var(--bg); color: var(--text); height: 100vh; overflow: hidden; }
 
         /* Auth View */
-        #authView { position: fixed; inset: 0; background: white; z-index: 9500; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; overflow-y: auto; }
+        #authView { position: fixed; inset: 0; background: white; z-index: 9500; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; }
         .auth-input { width: 100%; background: #f8f8f8; border: 1px solid #eee; padding: 15px; border-radius: 15px; margin-bottom: 10px; outline: none; }
         .social-auth { width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; }
-        .btn-social { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #ddd; background: white; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 500; cursor: pointer; transition: 0.2s; }
+        .btn-social { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #ddd; background: white; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 500; cursor: pointer; }
 
-        /* App Layout */
+        /* Layout */
         .view-section { height: 100vh; display: none; overflow-y: auto; padding-bottom: 80px; position: relative; }
         .active-view { display: flex; flex-direction: column; }
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 75px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #eee; z-index: 4000; }
         
-        /* Live & Video UI */
+        /* UI Elements */
         .follow-btn { background: var(--primary); color: white; border: none; padding: 5px 12px; border-radius: 20px; font-size: 12px; margin-top: 5px; }
         .live-badge { background: var(--live-red); color: white; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; position: absolute; top: 20px; left: 20px; }
-        
-        /* Chat & Media Bar */
         .chat-input-bar { padding: 10px; background: white; border-top: 1px solid #eee; display: flex; align-items: center; gap: 12px; position: fixed; bottom: 75px; width: 100%; }
-        .media-icons { display: flex; gap: 15px; color: var(--primary); font-size: 20px; }
-        .chat-box { flex: 1; background: #f0f0f0; border-radius: 20px; padding: 8px 15px; display: flex; align-items: center; }
-        
-        /* Bubble */
         #chatMessages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; background: #fafafa; }
         .bubble { max-width: 75%; padding: 12px; border-radius: 18px; font-size: 14px; position: relative; }
         .bubble.me { align-self: flex-end; background: var(--primary-grad); color: white; border-bottom-right-radius: 4px; }
         .bubble.you { align-self: flex-start; background: #fff; border: 1px solid #eee; border-bottom-left-radius: 4px; }
+        .grid-vdo { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 2px; }
+        .vdo-box { aspect-ratio: 9/16; background: #eee; border: 1px solid #ddd; }
     </style>
 </head>
 <body>
-    <div id="authView"> ... (เหมือนเดิม) ... </div>
+    <div id="authView">
+        <i class="fa-solid fa-cloud" style="font-size: 60px; color: var(--primary); margin-bottom: 20px;"></i>
+        <h2>Puffly Sovereign</h2>
+        <input type="email" id="userEmail" class="auth-input" placeholder="อีเมล">
+        <input type="password" id="userPass" class="auth-input" placeholder="รหัสผ่าน">
+        <button onclick="appAuth('login')" style="width:100%; padding:15px; border-radius:15px; border:none; background:var(--primary-grad); color:white; font-weight:bold; margin-bottom:10px;">เข้าสู่ระบบ</button>
+        <button onclick="appAuth('reg')" style="width:100%; padding:15px; border-radius:15px; border: 1px solid var(--primary); background:white; color:var(--primary); font-weight:bold;">สมัครสมาชิก</button>
+        <div class="social-auth">
+            <button onclick="loginWithGoogle()" class="btn-social google"><i class="fa-brands fa-google" style="color:#4285F4"></i> เข้าด้วย Google</button>
+        </div>
+    </div>
 
     <div id="homeView" class="view-section active-view">
-        <div style="background: #000; height: 100%; position: relative; display: flex; align-items: center; justify-content: center; color: white;">
+        <div style="background:#000; height:100%; position:relative; display:flex; align-items:center; justify-content:center; color:white;">
             <div class="live-badge"><i class="fa-solid fa-circle"></i> LIVE</div>
-            
-            <div style="position: absolute; bottom: 100px; left: 15px;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <div style="width: 45px; height: 45px; border-radius: 50%; background: var(--primary-grad); border: 2px solid white;"></div>
+            <div style="position:absolute; bottom:100px; left:15px;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <div style="width:45px; height:45px; border-radius:50%; background:var(--primary-grad); border:2px solid white;"></div>
                     <div>
                         <h3 id="displayUserName">@Puffly_User</h3>
                         <button class="follow-btn" onclick="this.innerText='ติดตามแล้ว'">ติดตาม</button>
                     </div>
                 </div>
-                <p style="margin-top:10px; font-size: 14px;">Welcome to Asura's Ransom World! ☁️</p>
             </div>
-
-            <div style="position: absolute; right: 15px; bottom: 120px; display: flex; flex-direction: column; gap: 22px; align-items: center;">
-                <div onclick="alert('ส่งของขวัญ')" style="text-align:center;"><i class="fa-solid fa-gift" style="font-size:28px; color: #ffd700;"></i><p style="font-size:10px;">ของขวัญ</p></div>
+            <div style="position:absolute; right:15px; bottom:120px; display:flex; flex-direction:column; gap:22px; align-items:center;">
+                <div onclick="alert('ส่งของขวัญ')"><i class="fa-solid fa-gift" style="font-size:28px; color:#ffd700"></i></div>
                 <i class="fa-solid fa-comment-dots" style="font-size:32px;" onclick="switchTab('inboxView')"></i>
                 <i class="fa-solid fa-bookmark" style="font-size:32px;" onclick="alert('บันทึกแล้ว')"></i>
-                <i class="fa-solid fa-share-nodes" style="font-size:32px;" onclick="alert('แชร์')"></i>
             </div>
         </div>
     </div>
 
     <div id="uploadMenu" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:5000; align-items:center; justify-content:center;">
         <div style="background:white; width:80%; border-radius:20px; padding:20px; display:flex; flex-direction:column; gap:15px;">
-            <button onclick="alert('เปิดกล้องถ่าย...'); closeUpload()" style="padding:15px; border-radius:10px; border:none; background:#f0f0f0;"><i class="fa-solid fa-camera"></i> ถ่ายวิดีโอใหม่</button>
-            <button onclick="alert('เลือกจากคลัง...'); closeUpload()" style="padding:15px; border-radius:10px; border:none; background:#f0f0f0;"><i class="fa-solid fa-image"></i> เลือกวิดีโอที่มีอยู่</button>
-            <button onclick="switchTab('homeView'); closeUpload(); alert('เข้าสู่โหมด LIVE')" style="padding:15px; border-radius:10px; border:none; background:var(--primary-grad); color:white;"><i class="fa-solid fa-tower-broadcast"></i> เริ่มต้น LIVE</button>
-            <button onclick="closeUpload()" style="color:red; margin-top:10px; border:none; background:none;">ยกเลิก</button>
+            <button onclick="alert('เปิดกล้อง...'); closeUpload()" style="padding:15px; border-radius:10px; border:none; background:#f0f0f0;"><i class="fa-solid fa-camera"></i> ถ่ายวิดีโอใหม่</button>
+            <button onclick="alert('เลือกไฟล์...'); closeUpload()" style="padding:15px; border-radius:10px; border:none; background:#f0f0f0;"><i class="fa-solid fa-image"></i> เลือกวิดีโอที่มีอยู่</button>
+            <button onclick="closeUpload()" style="color:red; border:none; background:none;">ยกเลิก</button>
         </div>
     </div>
     <div id="inboxView" class="view-section">
-        <div style="display:flex; align-items:center; justify-content:space-between; padding:15px; background:white; border-bottom:1px solid #eee;">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <div style="width:35px; height:35px; border-radius:50%; background:var(--primary-grad);"></div>
-                <b>ฝ่ายสนับสนุน / เพื่อน</b>
-            </div>
-            <i class="fa-solid fa-ellipsis-vertical"></i>
+        <div style="display:flex; align-items:center; padding:15px; background:white; border-bottom:1px solid #eee;">
+            <b>Support / Chat</b>
         </div>
-
-        <div id="chatMessages">
-            <div class="bubble you">สวัสดี! ยินดีต้อนรับสู่ Puffly คุณสามารถส่งรูปหรือเสียงหาเราได้นะ</div>
-        </div>
-
+        <div id="chatMessages"></div>
         <div class="chat-input-bar">
-            <div class="media-icons">
-                <i class="fa-solid fa-image" onclick="alert('เลือกรูปภาพ')"></i>
-                <i class="fa-solid fa-microphone" onclick="alert('เริ่มบันทึกเสียง')"></i>
+            <div style="display:flex; gap:15px; color:var(--primary); font-size:20px;">
+                <i class="fa-solid fa-image" onclick="alert('ส่งรูป')"></i>
+                <i class="fa-solid fa-microphone" onclick="alert('ส่งเสียง')"></i>
             </div>
-            <div class="chat-box">
-                <input type="text" id="chatInp" style="flex:1; border:none; background:none; outline:none;" placeholder="พิมพ์ข้อความ...">
-                <i class="fa-solid fa-face-smile" style="color:var(--muted); margin-left:10px;" onclick="alert('เปิดคลังอิโมจิ/สติกเกอร์')"></i>
+            <div style="flex:1; background:#f0f0f0; border-radius:20px; padding:8px 15px; display:flex; align-items:center;">
+                <input type="text" id="chatInp" style="flex:1; border:none; background:none; outline:none;" placeholder="พิมพ์...">
+                <i class="fa-solid fa-face-smile" style="color:var(--muted); margin-left:10px;" onclick="alert('อิโมจิ')"></i>
             </div>
             <i class="fa-solid fa-paper-plane" style="color:var(--primary); font-size:22px;" onclick="sendMsg()"></i>
         </div>
     </div>
+
     <div id="profileView" class="view-section">
         <div style="text-align:center; padding:40px 20px;">
             <div style="width:90px; height:90px; border-radius:30px; background:var(--primary-grad); margin:auto; color:white; display:flex; align-items:center; justify-content:center; font-size:35px;"><i class="fa-solid fa-user"></i></div>
             <h2 id="profName">@User</h2>
-            <p style="font-size:12px; color:var(--muted); margin-bottom:15px;">ID: 941028 | ผู้สร้างเกม Asura's Ransom</p>
+            <p style="font-size:12px; color:var(--muted); margin: 5px 0 15px;">ผู้สร้างเกม Asura's Ransom</p>
             <div style="display:flex; justify-content:center; gap:20px;">
                 <div><b>12.5K</b><p style="font-size:10px;">ผู้ติดตาม</p></div>
-                <div><b id="profCoins">500</b><p style="font-size:10px;">Coins</p></div>
-                <div><b>890</b><p style="font-size:10px;">ถูกใจ</p></div>
+                <div><b id="profCoins">0</b><p style="font-size:10px;">Coins</p></div>
             </div>
-            <button onclick="alert('แก้ไขโปรไฟล์')" style="margin-top:15px; width:60%; padding:8px; border-radius:8px; border:1px solid #ddd; background:white;">แก้ไขโปรไฟล์</button>
+            <button onclick="alert('Edit')" style="margin-top:15px; width:60%; padding:8px; border-radius:8px; border:1px solid #ddd; background:white;">แก้ไขโปรไฟล์</button>
         </div>
         <div style="display:flex; border-top:1px solid #eee;">
-            <div style="flex:1; text-align:center; padding:15px; border-bottom:2px solid var(--primary);"><i class="fa-solid fa-grip"></i> วิดีโอ</div>
-            <div style="flex:1; text-align:center; padding:15px; color:var(--muted);"><i class="fa-solid fa-heart"></i> ถูกใจ</div>
+            <div style="flex:1; text-align:center; padding:15px; border-bottom:2px solid var(--primary);"><i class="fa-solid fa-grip"></i></div>
+            <div style="flex:1; text-align:center; padding:15px; color:var(--muted);"><i class="fa-solid fa-heart"></i></div>
         </div>
-        <div class="grid-vdo" id="vdoGrid">
-            <div class="vdo-box"></div><div class="vdo-box"></div><div class="vdo-box"></div>
-        </div>
+        <div class="grid-vdo" id="vdoGrid"></div>
     </div>
 
     <nav class="bottom-nav">
@@ -129,17 +120,73 @@
         <i class="fa-solid fa-comment-dots" onclick="switchTab('inboxView')"></i>
         <i class="fa-solid fa-user" onclick="switchTab('profileView')"></i>
     </nav>
-
     <script type="module">
-        // ... (Firebase Import และ Config เหมือนเดิม) ...
-        
-        window.openUpload = () => document.getElementById('uploadMenu').style.display = 'flex';
-        window.closeUpload = () => document.getElementById('uploadMenu').style.display = 'none';
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAT48SVlLZGo_XEYmf_K4MD06GqDLa_N9c",
+            authDomain: "puffly-86e43.firebaseapp.com",
+            projectId: "puffly-86e43",
+            storageBucket: "puffly-86e43.firebasestorage.app",
+            messagingSenderId: "841845436320",
+            appId: "1:841845436320:web:61e2ff1988c48bc634fec5"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        window.loginWithGoogle = async () => {
+            const provider = new GoogleAuthProvider();
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                const userRef = doc(db, "users", user.uid);
+                const snap = await getDoc(userRef);
+                if (!snap.exists()) {
+                    await setDoc(userRef, { coins: 500, name: user.displayName || "User", uploads: [], saved: [] });
+                }
+            } catch (e) { alert(e.message); }
+        };
+
+        window.appAuth = async (type) => {
+            const email = document.getElementById('userEmail').value;
+            const pass = document.getElementById('userPass').value;
+            try {
+                if(type === 'reg') {
+                    const res = await createUserWithEmailAndPassword(auth, email, pass);
+                    await setDoc(doc(db, "users", res.user.uid), { coins: 500, name: email.split('@')[0], uploads: [], saved: [] });
+                } else {
+                    await signInWithEmailAndPassword(auth, email, pass);
+                }
+            } catch (e) { alert(e.message); }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('authView').style.display = 'none';
+                onSnapshot(doc(db, "users", user.uid), (snap) => {
+                    if(snap.exists()){
+                        const data = snap.data();
+                        document.getElementById('profCoins').innerText = data.coins;
+                        document.getElementById('profName').innerText = "@" + data.name;
+                        document.getElementById('displayUserName').innerText = "@" + data.name;
+                    }
+                });
+            } else {
+                document.getElementById('authView').style.display = 'flex';
+            }
+        });
 
         window.switchTab = (id) => {
             document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
             document.getElementById(id).classList.add('active-view');
         };
+
+        window.openUpload = () => document.getElementById('uploadMenu').style.display = 'flex';
+        window.closeUpload = () => document.getElementById('uploadMenu').style.display = 'none';
 
         window.sendMsg = () => {
             const inp = document.getElementById('chatInp');
@@ -151,7 +198,6 @@
             inp.value = "";
             document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
         };
-        // ... (ระบบ Auth เหมือนเดิม) ...
     </script>
 </body>
 </html>
