@@ -3,212 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Puffly | Admin Control Panel</title>
+    <title>Puffly Admin Control Center</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary: #ff8fa3;
-            --dark: #2d1b20;
-            --success: #2ecc71;
-            --bg: #f8f9fa;
-            --muted: #6c757d;
-        }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; display: flex; }
-        
-        /* Sidebar */
-        .sidebar { width: 250px; background: var(--dark); height: 100vh; color: white; padding: 20px; position: fixed; }
-        .sidebar h2 { color: var(--primary); letter-spacing: 2px; margin-bottom: 30px; }
-        .menu-item { padding: 15px; cursor: pointer; display: flex; align-items: center; gap: 10px; opacity: 0.7; transition: 0.3s; border-radius: 10px; margin-bottom: 5px; }
-        .menu-item:hover, .menu-item.active { opacity: 1; background: rgba(255,255,255,0.1); }
-        .menu-item.active { border-left: 4px solid var(--primary); }
-
-        /* Main Content */
-        .main-content { margin-left: 250px; padding: 30px; width: calc(100% - 250px); }
-        .tab-content { display: none; animation: fadeIn 0.3s ease; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Dashboard Cards */
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .stat-card h3 { margin: 0; color: var(--muted); font-size: 14px; }
-        .stat-card .value { font-size: 24px; font-weight: bold; margin: 10px 0; color: var(--dark); }
-        .stat-card .trend { font-size: 12px; color: var(--success); }
-
-        /* Tables */
-        .data-table-container { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th { text-align: left; padding: 12px; border-bottom: 2px solid #eee; color: var(--muted); }
-        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
-        
-        /* Badges & Buttons */
-        .status-pill { padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
-        .status-pending { background: #fff3cd; color: #856404; }
-        .btn-approve { background: var(--success); color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; }
-        .btn-add { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; }
-        .btn-edit { background: #f0f2f5; border: 1px solid #ddd; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+        :root { --admin-gold: #ffcc00; --admin-bg: #0a0a0a; --card-bg: #161616; }
+        body { margin:0; font-family:'Inter', sans-serif; background:var(--admin-bg); color:#fff; padding-bottom: 50px; }
+        .admin-header { padding:20px; background:linear-gradient(to right, #1a1a1a, #000); border-bottom:1px solid #333; display:flex; justify-content:space-between; align-items:center; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
+        .stat-card { background: var(--card-bg); padding: 20px; border-radius: 15px; border: 1px solid #222; }
+        .stat-card h3 { margin: 0; font-size: 12px; color: #888; text-transform: uppercase; }
+        .stat-card p { margin: 10px 0 0; font-size: 20px; font-weight: bold; color: var(--admin-gold); }
+        .admin-section { padding: 0 20px; }
+        .admin-card { background: var(--card-bg); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid #222; }
+        input, textarea, button { width: 100%; padding: 12px; margin-top: 10px; border-radius: 10px; border: 1px solid #333; background: #222; color: #fff; box-sizing: border-box; font-family: inherit; }
+        .btn-add { background: var(--admin-gold); color: #000; font-weight: bold; border: none; cursor: pointer; }
+        .btn-add:hover { opacity: 0.9; }
+        .gift-list-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; }
+        .gift-preview { width: 45px; height: 45px; background: #333; border-radius: 10px; object-fit: cover; }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <h2>PUFFLY ADMIN</h2>
-        <div class="menu-item active" onclick="switchTab('dashboard', this)"><i class="fa-solid fa-chart-line"></i> แผงควบคุม</div>
-        <div class="menu-item" onclick="switchTab('inventory', this)"><i class="fa-solid fa-box-open"></i> จัดการของขวัญ/สติกเกอร์</div>
-        <div class="menu-item" onclick="alert('ระบบจัดการผู้ใช้กำลังพัฒนา')"><i class="fa-solid fa-users"></i> ผู้ใช้งาน</div>
-        <div class="menu-item" onclick="alert('ระบบวิดีโอกำลังพัฒนา')"><i class="fa-solid fa-video"></i> ตรวจสอบวิดีโอ</div>
-        <div class="menu-item" onclick="alert('ตั้งค่าระบบ')"><i class="fa-solid fa-gear"></i> ตั้งค่าหัก %</div>
+<div class="admin-header">
+    <div>
+        <h2 style="margin:0; font-size:18px; color:var(--admin-gold);">Puffly Admin</h2>
+        <small style="color:#555;">ระบบควบคุมกลาง (Asura Edition)</small>
+    </div>
+    <button onclick="window.location.href='index.html'" style="width:auto; margin:0; padding:8px 15px; font-size:12px; background:#333;">ไปหน้าแอป</button>
+</div>
+
+<div class="stat-grid">
+    <div class="stat-card">
+        <h3>รายได้รวมแอป (30%)</h3>
+        <p>฿<span id="adminTotalRevenue">0.00</span></p>
+    </div>
+    <div class="stat-card">
+        <h3>ค่าธรรมเนียมถอน (5%)</h3>
+        <p>฿<span id="adminWithdrawFee">0.00</span></p>
+    </div>
+</div>
+
+<div class="admin-section">
+    <div class="admin-card">
+        <h3><i class="fa-solid fa-bullhorn" style="color:var(--admin-gold);"></i> ส่งประกาศถึงผู้ใช้</h3>
+        <textarea id="adminAnnounceInput" placeholder="พิมพ์ข้อความประกาศกฎ หรือ Patch Update..."></textarea>
+        <button class="btn-add" onclick="publishAnnouncement()">ยืนยันการส่งประกาศ</button>
+        <button onclick="clearAnnouncement()" style="background:#444; font-size:12px;">ล้างประกาศเดิม</button>
     </div>
 
-    <div class="main-content">
+    <div class="admin-card">
+        <h3><i class="fa-solid fa-gift" style="color:var(--admin-gold);"></i> อัปโหลดของขวัญใหม่</h3>
+        <input type="text" id="newGiftName" placeholder="ชื่อของขวัญ">
+        <input type="number" id="newGiftPrice" placeholder="ราคา (บาท)">
+        <p style="font-size:12px; color:#666; margin:10px 0 5px;">เลือกรูปภาพไอคอน:</p>
+        <input type="file" id="giftImageInput" accept="image/*">
+        <button class="btn-add" onclick="uploadNewGift()">เพิ่มเข้าสู่ระบบ</button>
+    </div>
+
+    <div class="admin-card">
+        <h3 style="margin-top:0;">รายการของขวัญในแอป</h3>
+        <div id="adminGiftList">
+            </div>
+    </div>
+</div>
+
+<script>
+    // ดึงข้อมูลรายได้ (จำลอง)
+    function updateStats() {
+        // ในระบบจริงจะดึงจาก Database แต่ตอนนี้ใช้ค่าจำลอง
+        document.getElementById('adminTotalRevenue').innerText = "0.00";
+        document.getElementById('adminWithdrawFee').innerText = "0.00";
+    }
+
+    // ระบบประกาศ
+    function publishAnnouncement() {
+        const msg = document.getElementById('adminAnnounceInput').value;
+        if (!msg) { alert("กรุณาพิมพ์ข้อความ"); return; }
+        localStorage.setItem('appAnnouncement', msg);
+        alert("ส่งประกาศสำเร็จ! หน้า User จะเห็นแถบสีทอง");
+    }
+
+    function clearAnnouncement() {
+        localStorage.removeItem('appAnnouncement');
+        document.getElementById('adminAnnounceInput').value = '';
+        alert("ล้างประกาศแล้ว");
+    }
+
+    // ระบบของขวัญ
+    function uploadNewGift() {
+        const name = document.getElementById('newGiftName').value;
+        const price = document.getElementById('newGiftPrice').value;
+        const fileInput = document.getElementById('giftImageInput');
+
+        if (!name || !price || !fileInput.files[0]) {
+            alert("กรุณากรอกข้อมูลให้ครบ"); return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const giftData = {
+                id: Date.now(),
+                name: name,
+                price: parseInt(price),
+                image: e.target.result
+            };
+            let currentGifts = JSON.parse(localStorage.getItem('appGifts')) || [];
+            currentGifts.push(giftData);
+            localStorage.setItem('appGifts', JSON.stringify(currentGifts));
+            alert("อัปโหลดของขวัญสำเร็จ!");
+            renderGifts();
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+    }
+
+    function renderGifts() {
+        const list = document.getElementById('adminGiftList');
+        const gifts = JSON.parse(localStorage.getItem('appGifts')) || [];
+        list.innerHTML = gifts.length === 0 ? '<p style="color:#444;">ยังไม่มีของขวัญ</p>' : '';
         
-        <div id="dashboard" class="tab-content active">
-            <h1>ภาพรวมระบบประจำวันนี้</h1>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3>รายได้รวม (หัก 30% แล้ว)</h3>
-                    <div class="value">฿ 12,450.00</div>
-                    <div class="trend"><i class="fa-solid fa-arrow-up"></i> +15% จากเมื่อวาน</div>
+        gifts.forEach((g, index) => {
+            const div = document.createElement('div');
+            div.className = 'gift-list-item';
+            div.innerHTML = `
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <img src="${g.image}" class="gift-preview">
+                    <div><b>${g.name}</b><br><small>฿${g.price}</small></div>
                 </div>
-                <div class="stat-card">
-                    <h3>จำนวน Coin ที่เติม</h3>
-                    <div class="value">45,000 Coins</div>
-                    <div class="trend">120 รายการ</div>
-                </div>
-                <div class="stat-card">
-                    <h3>ผู้ใช้ใหม่วันนี้</h3>
-                    <div class="value">1,204 คน</div>
-                    <div class="trend" style="color:var(--primary)">เป้าหมาย 2,000</div>
-                </div>
-                <div class="stat-card">
-                    <h3>รายการรอถอนเงิน</h3>
-                    <div class="value" style="color:red;">8 รายการ</div>
-                    <div class="trend" style="color:orange;">ต้องตรวจสอบ</div>
-                </div>
-            </div>
+                <i class="fa-solid fa-trash" style="color:#ff4444; cursor:pointer;" onclick="deleteGift(${index})"></i>
+            `;
+            list.appendChild(div);
+        });
+    }
 
-            <div class="data-table-container">
-                <h2>รายการขอถอนเงินล่าสุด</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>วัน/เวลา</th>
-                            <th>ชื่อครีเอเตอร์</th>
-                            <th>ยอดถอน (฿)</th>
-                            <th>ช่องทางรับเงิน</th>
-                            <th>สถานะ</th>
-                            <th>จัดการ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>10/01/2026 14:20</td>
-                            <td>@Puffly_Creator</td>
-                            <td>฿ 2,500.00</td>
-                            <td>K-Bank (012-x-xxxxx)</td>
-                            <td><span class="status-pill status-pending">รอตรวจสอบ</span></td>
-                            <td><button class="btn-approve" onclick="approve(this)">อนุมัติ & โอนเงิน</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="inventory" class="tab-content">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h1>คลังของขวัญ & สติกเกอร์</h1>
-                <button onclick="addNewItem()" class="btn-add">+ เพิ่มไอเทมใหม่</button>
-            </div>
-            
-            <div class="data-table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>รูป</th>
-                            <th>ชื่อไอเทม</th>
-                            <th>ประเภท</th>
-                            <th>ราคา (Coins)</th>
-                            <th>สถานะ</th>
-                            <th>จัดการ</th>
-                        </tr>
-                    </thead>
-                    <tbody id="inventoryList">
-                        <tr>
-                            <td style="font-size: 24px;">🎀</td>
-                            <td>Puffly Ribbon</td>
-                            <td>ของขวัญ</td>
-                            <td>10</td>
-                            <td><span style="color:green; font-weight:bold;">ใช้งานอยู่</span></td>
-                            <td><button class="btn-edit" onclick="editItem()">แก้ไข</button></td>
-                        </tr>
-                        <tr>
-                            <td style="font-size: 24px;">😎</td>
-                            <td>Cool Bird Pack</td>
-                            <td>สติกเกอร์</td>
-                            <td>50</td>
-                            <td><span style="color:green; font-weight:bold;">ใช้งานอยู่</span></td>
-                            <td><button class="btn-edit" onclick="editItem()">แก้ไข</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-    </div>
-
-    <script>
-        // ระบบสลับหน้า
-        function switchTab(tabId, el) {
-            // ซ่อนทุกหน้า
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            // เอาสถานะ active ออกจากทุกเมนู
-            document.querySelectorAll('.menu-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            // แสดงหน้าและเมนูที่เลือก
-            document.getElementById(tabId).classList.add('active');
-            el.classList.add('active');
+    function deleteGift(index) {
+        if(confirm('ลบของขวัญชิ้นนี้?')) {
+            let gifts = JSON.parse(localStorage.getItem('appGifts'));
+            gifts.splice(index, 1);
+            localStorage.setItem('appGifts', JSON.stringify(gifts));
+            renderGifts();
         }
+    }
 
-        // ฟังก์ชันจัดการถอนเงิน
-        function approve(btn) {
-            if(confirm("คุณได้โอนเงินให้ครีเอเตอร์คนนี้เรียบร้อยแล้วใช่ไหม?")) {
-                const row = btn.closest('tr');
-                row.style.opacity = '0.5';
-                btn.innerText = "โอนแล้ว";
-                btn.disabled = true;
-                btn.style.background = "#ccc";
-            }
-        }
-
-        // ฟังก์ชันเพิ่มไอเทมใหม่ (ตามโค้ดที่คุณต้องการ)
-        function addNewItem() {
-            let name = prompt("ชื่อไอเทม:");
-            let price = prompt("ราคา (Coins):");
-            let type = prompt("ประเภท (ของขวัญ/สติกเกอร์):");
-            
-            if(name && price && type) {
-                const list = document.getElementById('inventoryList');
-                const newRow = document.createElement('tr');
-                newRow.innerHTML = `
-                    <td style="font-size: 24px;">📦</td>
-                    <td>${name}</td>
-                    <td>${type}</td>
-                    <td>${price}</td>
-                    <td><span style="color:green; font-weight:bold;">ใช้งานอยู่</span></td>
-                    <td><button class="btn-edit" onclick="editItem()">แก้ไข</button></td>
-                `;
-                list.appendChild(newRow);
-                alert("เพิ่มไอเทม " + name + " เข้าสู่ระบบจำลองแล้ว!");
-            }
-        }
-
-        function editItem() {
-            alert("ระบบแก้ไขกำลังอยู่ในช่วงพัฒนา... (รอเชื่อมต่อ Database)");
-        }
-    </script>
+    window.onload = () => {
+        updateStats();
+        renderGifts();
+    };
+</script>
 </body>
 </html>
